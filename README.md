@@ -1,4 +1,4 @@
-uptime
+WebSpy
 ======
 
 A remote monitoring application using Node.js, MongoDB, and Twitter Bootstrap.
@@ -28,10 +28,10 @@ Features
 * Powerful plugin system to ease extension and customization
 * Easy installation and zero administration
 
-Installing Uptime
+Installing WebSpy
 -----------------
 
-Uptime 3.2 requires Node.js 0.10.25
+WebSpy 0.5 requires Node.js 0.10.25
  and MongoDB 2.1. Older versions provide compatibility with Node 0.8 (Uptime v3.1) and 0.6 (Uptime v1.4).
 
 To install from GitHub, clone the repository and install dependencies using `npm` and `bower`:
@@ -67,15 +67,6 @@ Or if you want a cluster
 $ node cluster
 ```
 
-Upgrading From a 2.0 Install
-----------------------------
-
-If you have been using uptime 1.0 or 2.0, you have to execute the migration script before using the new release.
-
-```sh
-$ node models/migrations/upgrade2to3
-```
-
 Adding Checks
 -------------
 
@@ -88,7 +79,7 @@ And you're ready to begin. Create your first check by entering an URL, wait for 
 Configuring
 -----------
 
-Uptime uses [node-config](https://github.com/lorenwest/node-config) to allow YAML configuration and environment support. Here is the default configuration, taken from `config/default.yaml`:
+WebSpy uses [node-config](https://github.com/lorenwest/node-config) to allow YAML configuration and environment support. Here is the default configuration, taken from `config/default.yaml`:
 
 ```yaml
 url:        'http://localhost:8082'
@@ -121,18 +112,18 @@ plugins:
   # - ./plugins/email
 ```
 
-To modify this configuration, create a `development.yaml` or a `production.yaml` file in the same directory, and override just the settings you need. For instance, to run Uptime on port 80 in production, create a `production.yaml` file as follows:
+To modify this configuration, create a `development.yaml` or a `production.yaml` file in the same directory, and override just the settings you need. For instance, to run WebSpy on port 80 in production, create a `production.yaml` file as follows:
 
 ```yaml
 url: 'http://myDomain.com'
 ```
 
-Node that Uptime works great behind a proxy - it uses the `http_proxy` environment variable transparently.
+Node that WebSpy works great behind a proxy - it uses the `http_proxy` environment variable transparently.
 
 SSL
 ---
 
-By default, Uptime uses regular HTTP on the API and monitor server, but it's possible to enable SSL for encrypting the connection to your monitor instance. The settings for this are located in the `config/default.yaml` file:
+By default, WebSpy uses regular HTTP on the API and monitor server, but it's possible to enable SSL for encrypting the connection to your monitor instance. The settings for this are located in the `config/default.yaml` file:
 
 ```yaml
 ssl:
@@ -147,7 +138,7 @@ You must specify `true` for the `selfSigned` option when using a self-signed cer
 Architecture
 ------------
 
-Uptime is composed of two services: a webapp (in `app.js`), and a polling monitor (in `monitor.js)`. For your convenience, the two services start together when you call `node app`.
+WebSpy is composed of two services: a webapp (in `app.js`), and a polling monitor (in `monitor.js)`. For your convenience, the two services start together when you call `node app`.
 
 <img src="https://raw.github.com/fzaninotto/uptime/downloads/architecture.png" title="Uptime architecture" />
 
@@ -233,7 +224,7 @@ exports.initWebapp = function() {
   });
 }
 ```
-All Uptime entities emit lifecycle events that you can listen to on the Model class. These events are `beforeInsert`, `afterInsert`, `beforeUpdate`, `afterUpdate`, `beforeSave` (called for both inserts and updates), `afterSave` (called for both inserts and updates), `beforeRemove`, and `afterRemove`. For more information about these events, check the [mongoose-lifecycle](https://github.com/fzaninotto/mongoose-lifecycle) plugin.
+All WebSpy entities emit lifecycle events that you can listen to on the Model class. These events are `beforeInsert`, `afterInsert`, `beforeUpdate`, `afterUpdate`, `beforeSave` (called for both inserts and updates), `afterSave` (called for both inserts and updates), `beforeRemove`, and `afterRemove`. For more information about these events, check the [mongoose-lifecycle](https://github.com/fzaninotto/mongoose-lifecycle) plugin.
 
 API
 ---------------
@@ -482,9 +473,9 @@ Join the [node-uptime](https://groups.google.com/d/forum/node-uptime) Google Gro
 License
 -------
 
-The Uptime code is free to use and distribute, under the [MIT license](https://raw.github.com/fzaninotto/uptime/master/LICENSE).
+The WebSpy code is free to use and distribute, under the [MIT license](https://raw.github.com/fzaninotto/uptime/master/LICENSE).
 
-Uptime uses third-party libraries:
+WebSpy uses third-party libraries:
 
 * [NodeJS](http://nodejs.org/), licensed under the [MIT License](https://github.com/joyent/node/blob/master/LICENSE#L5-22),
 * [Socket.io](http://socket.io/), licensed under the [MIT License](https://github.com/LearnBoost/socket.io/blob/master/Readme.md),
@@ -494,6 +485,8 @@ Uptime uses third-party libraries:
 * [Flotr2](http://www.humblesoftware.com/flotr2/), licensed under the [MIT License](https://github.com/HumbleSoftware/Flotr2/blob/master/LICENSE).
 * [Favicon](http://www.alexpeattie.com/projects/justvector_icons/), distributed under the [Free Art License](http://artlibre.org/licence/lal/en).
 * [Redis](http://redis.io/), distributed under the [Three clause BSD license](http://redis.io/topics/license).
+
+WebSpy is forked from [Uptime](https://github.com/fzaninotto/uptime).
 
 If you like the software, please help improving it by contributing PRs on the [GitHub project](https://github.com/fzaninotto/uptime)!
 
