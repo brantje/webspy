@@ -1,0 +1,74 @@
+url: 'https://localhost:8443'
+
+mongodb:
+  server: localhost
+  database: uptime
+  user: "uptime" 
+  password: "uptime"
+  connectionString:       # alternative to setting server, database, user and password separately
+
+monitor:
+  name:                   origin
+  apiUrl:                 'https://localhost:8443/api' # must be accessible without a proxy
+  pollingInterval:        10000      # ten seconds
+  timeout:                5000       # five seconds
+  userAgent:              NodeUptime/3.0 (https://github.com/fzaninotto/uptime)
+
+ssl:
+  enabled:                true
+  certificate:            ssl/uptime.crt # certificate file
+  key:                    ssl/uptime.key # key file
+  selfSigned:             true
+  redirectHTTP:            false
+
+analyzer:
+  updateInterval:         60000      # one minute
+  qosAggregationInterval: 600000     # ten minutes
+  pingHistory:            8035200000 # three months
+
+autoStartMonitor: true
+
+statushub:
+  endpoint: https://statushub.io/api/status_pages #the same for all
+  subdomains: '' # for example ["my_stuff"] as you can have a number of different status pages
+  apiKey: ''
+
+pushbullet:
+  apikey: ""
+
+
+plugins:
+  - ./plugins/console
+  - ./plugins/patternMatcher
+  - ./plugins/httpOptions
+  #- ./plugins/httpsOAuthOptions
+  # - ./plugins/email
+  # - ./plugins/basicAuth
+  #- ./plugins/statushub
+
+email:
+  method:      SMTP  # possible methods are SMTP, SES, or Sendmail
+  transport:         # see https://github.com/andris9/nodemailer for transport options
+    service:   Gmail # see https://github.com/andris9/Nodemailer/blob/master/lib/wellknown.js for well-known services
+    auth:            
+      user: ""         # The email account username, e.g. 'username@gmail.com'
+      pass: ""         # The email account password, e.G. 'password'
+  event:
+    up:        true
+    down:      true
+    paused:    false
+    restarted: false
+  message:           
+    from: ""            # The message sender, e.g. 'Fred Foo <foo@blurdybloop.com>'
+    to: ""             # The message recipient, e.g. 'bar@blurdybloop.com, baz@blurdybloop.com'
+  # The email plugin also uses the main `url` param for hyperlinks in the sent emails
+
+basicAuth:
+  username:    admin
+  password:    password
+verbose: false # only used in dev
+
+webPageTest:
+  server: 'http://www.webpagetest.org'
+  key:
+  testOptions: 

@@ -1,0 +1,32 @@
+<form class="form-signup"  method="post">
+  <% if(errors.length > 0){ %>
+  <div class="alert alert-danger" role="alert">
+    <% for(var i=0; i < errors.length; i++) { %>
+      <div><%= errors[i] %></div>
+    <% }%>
+  </div>
+  <% } %>
+  <h2 class="form-signin-heading">Signup</h2>
+  <label for="name-tf" class="sr-only">Name</label>
+  <input id="name-tf" type="text" name="name" class="form-control" placeholder="Name" required autofocus><br />
+  <label for="email-tf" class="sr-only">Email</label>
+  <input id="email-tf" type="email" name="email" class="form-control" placeholder="Email" required><br />
+  <label for="user-tf" class="sr-only">Username</label>
+  <input id="user-tf" type="text" name="user" class="form-control" placeholder="Username" required><br />
+  <label for="pass-tf" class="sr-only">Password</label>
+  <input id="pass-tf" type="password" name="pass" class="form-control" placeholder="Password" required>
+  <label for="pass-tf" class="sr-only">Password (repeat)</label>
+  <input id="pass-tf" type="password" name="passr" class="form-control" placeholder="Repeat password" required>
+  <div class="form-actions">
+    <button type="button" id="account-form-btn1" class="btn btn-danger">Cancel</button>
+    <button type="submit" id="account-form-btn2" class="btn btn-success">Signup</button>
+  </div>
+  <br />
+
+</form>
+
+<script>
+  $(document).ready(function(){
+    $('#account-form-btn1').click(function(){ window.location.href = '/';});
+  });
+</script>

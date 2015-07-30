@@ -1,0 +1,21 @@
+{
+  "name": "uptime",
+  "version": "0.0.0",
+  "homepage": "https://github.com/fzaninotto/uptime",
+  "authors": [
+    "wangshijun2010 <wangshijun2010@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.1",
+    "fontawesome": "~4.3.0",
+    "moment": "~2.9.0"
+  }
+}

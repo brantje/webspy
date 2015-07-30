@@ -1,0 +1,251 @@
+<% addedCss.push('jquery-ui.autocomplete.min.css') %>
+<% addedCss.push('jquery.tagsinput.css') %>
+
+<div class="tab-pane" id="admin">
+    <form id="check_form" method="post" class="form-vertical" action="<%= route %>/checks<%= check.isNew ? '' : '/' + check._id %>">
+        <input type="hidden" name="_method" value="<%= (check.isNew) ? 'post' : 'put' %>" />
+
+          <div class="form-group">
+              <label class="control-label">Name</label>
+              <input type="text" name="check[name]" value="<%= check.name || '' %>" class="form-control col-sm-6" placeholder="Type a name here"/>
+          </div>
+
+          <div class="form-group">
+              <label class="control-label">Url</label>
+              <input type="text" required name="check[url]" value="<%= check.url || '' %>" class="form-control col-sm-6"  placeholder="http://www.example.com"/>
+          </div>
+
+          <div class="form-group">
+              <label class="control-label">Type</label>
+              <select id="type" name="check[type]" value="<% check.type || '' %>" class="form-control">
+                  <option value="">auto</option>
+                  <% pollerCollection.getTypes().forEach(function(poller) { %>
+                  <option value="<%= poller %>" <% if (poller === check.type) { %> selected="true" <% } %>><%= poller %></option>
+                  <% }) %>
+              </select><br />
+              <label id="httpslabel" style="display: none;"><input name="check[allowInvalidSSL]" type="checkbox"
+                  <% if(check.allowInvalidSSL) { %> checked <% } %>     >Allow invalid SSL certificate</label>
+          </div>
+          <div class="col-xs-12 col-sm-6 col-md-6 nopadding">
+            <div class="form-group">
+                <label class="control-label">Polling interval</label>
+                <div class="input-group col-sm-4">
+                    <% if (check.lastTested) { %>
+                    <span class="input-group-addon" name="pause">
+                        <i class="fa fa-<%= check.isPaused ? 'play' : 'pause' %>"></i>
+                    </span>
+                    <% } %>
+                    <input type="text" name="check[interval]" value="<%= (check.interval / 1000).toFixed() %>" class="form-control" />
+                    <span class="input-group-addon">s</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Timeout</label>
+                <div class="input-group col-sm-4">
+                    <input type="text" name="check[timeout]" value="<%= ((check.timeout || 5000) / 1000).toFixed() %>" class="form-control" />
+                    <span class="input-group-addon">s</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Slow threshold</label>
+                <div class="input-group col-sm-4">
+                    <input type="text" name="check[maxTime]" value="<%= check.maxTime %>" class="form-control" />
+                    <span class="input-group-addon">ms</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Alert threshold</label>
+                <div class="input-group col-sm-5 col-md-4">
+                    <input type="text" name="check[alertTreshold]" value="<%= check.alertTreshold %>" class="form-control" />
+                    <span class="input-group-addon">failed pings</span>
+                </div>
+            </div>
+
+            <span id="pollerDetails">
+                <%- pollerDetails %>
+            </span>
+
+            <div class="form-group">
+                <label class="control-label">Tags</label>
+                <textarea name="check[tags]" rows="2" class="form-control"><%= check.tags.join(', ') %></textarea>
+              <p class="muted">Separate tags with a comma</p>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-6 nopadding">
+          <label class="control-label">Enabled notification services</label>
+          <div class="checkbox">
+            <label class="checkbox">
+              <input type="checkbox" name="check[notifiers][email][value]"
+                      <% if(check.notifiers.email) {
+                      %>
+                      <% if(check.notifiers.email.value !== '') {
+                      %>
+                     checked="checked"
+                      <% } %><% } %>
+                      >E-mail
+            </label>
+            <div id="extraEmails" style="display: none;">
+              <label>
+                Extra e-mail addresses to be notified
+              <br />
+              <input type="form-control" id="extraEmailInput"></label>
+              <p class="muted">Separate e-mails with a comma</p>
+            </div>
+          </div>
+          <div class="checkbox">
+            <label class="checkbox">
+              <input type="checkbox" id="pushBullet"
+                    <% if(check.notifiers.pushbullet) { %>
+                      <% if(check.notifiers.pushbullet.apikey !== '') { %>
+                     checked="checked"
+                      <% } %>
+                    <% } %> > Pushbullet<br/>
+            </label>
+            <div id="pushBulletSettings" style="display: none">
+                       <input class="form-control" style="max-width: 200px;" type="hidden" value=""
+                              name="check[notifiers][pushbullet][apikey]" placeholder="Enter your Pushbullet api key">
+            </div>
+
+          </div>
+          <% if(user.notificationSettings.statushub.apikey !='' || check['statusHubId'] ) {%>
+          <div class="checkbox">
+            <label class="checkbox">
+              <input type="checkbox" id="statusHub"
+                      <% if(user.notificationSettings.statushub.apikey) { %>
+                     checked="checked"
+                      <% } %>
+                      > Statushub<br/>
+            </label>
+            <div class="form-group">
+              <label class="control-label">StatusHub Id</label>
+              <input type="text" name="check[statusHubId]" value="<%= check.statusHubId || '' %>" class="form-control col-sm-6" placeholder="id number here"/>
+            </div>
+
+          </div>
+          <% } %>
+        </div>
+        <br style="clear: both;">
+        <% if (check.lastTested) { %>
+        <div class="form-group">
+            <label class="control-label">Last edited on</label>
+            <p class="static-control"><%= check.lastTested.getTime() %></p>
+        </div>
+        <% } %>
+
+        <div class="form-group">
+            <% if (check.isNew) { %>
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="submit" name="saveandadd" value="true" class="btn btn-primary">Save and add</button>
+            <a class="btn" href="<%= route %>/checks">Cancel</a>
+            <% } else { %>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+            <a class="btn" href="<%= route %>/checks/<%= check._id %>">Cancel</a>
+            <button type="submit" class="btn btn-danger pull-right" name="delete">Delete</button>
+            <% } %>
+        </div>
+
+    </form>
+</div>
+<script src="<%= route %>/javascripts/jquery.tagsinput.min.js"></script>
+
+<script>
+var intervalFieldSelector = 'form input[name="check\\[interval\\]"]';
+function updatePollingIntervalTooltip() {
+  var value = $(intervalFieldSelector).val();
+  if (value > 60 ) {
+    value = (value / 60).toFixed();
+    unit = 'minute' + (value > 1 ? 's' : '');
+    $(intervalFieldSelector + ' + span').html('s (' + value + ' ' + unit + ')');
+  } else {
+    $(intervalFieldSelector + ' + span').html('s');
+  }
+}
+$(document).ready(function() {
+  $('.uneditable-input').text(moment(parseInt($('.uneditable-input').html())).format('LLLL'));
+  $('#check_form button[name="delete"]').click(function() {
+    if (!confirm("This will delete the check and related pings and stats.\nAre you sure?")) return false;
+    $('#check_form input[name="_method"]').val('delete');
+  });
+  updatePollingIntervalTooltip();
+
+  $(intervalFieldSelector).bind('keypress keyup', updatePollingIntervalTooltip);
+
+  $('#check_form input[name*="url"]').blur(function() {
+    var field = $(this);
+    if (field.val() && field.val().indexOf('://') == -1) {
+      if($('[name="check[type]"]').val()===''){
+        field.val('http://' + field.val());
+      } else {
+        field.val($('[name="check[type]"]').val()+'://'+field.val())
+      }
+    }
+    if(field.val().indexOf('https') !== -1){
+      $('#httpslabel').show();
+    }
+  });
+  $('#check_form input[name*="url"]').trigger('blur');
+
+  $('form select[name="check\\[type\\]"]').bind('change', function() {
+    var pollerDetails = $('#pollerDetails');
+    $.get('<%= route %>/pollerPartial/' + $(this).val())
+      .fail(function() { pollerDetails.html(''); })
+      .done(function(html) { pollerDetails.html(html); });
+  });
+
+
+  $('#pushBullet').click(function () {
+    if ($(this).is(':checked')) {
+      $('[name="check[notifiers][pushbullet][apikey]"]').val('<%= user.notificationSettings.pushbullet.apikey %>')
+    } else {
+      $('[name="check[notifiers][pushbullet][apikey]"]').val('')
+    }
+  });
+  $('[name="check[notifiers][email][value]"]').click(function () {
+    if ($(this).is(':checked')) {
+      $('[name="check[notifiers][email][value]"]').val('<%= user.email %>');
+      $('#extraEmails').show();
+    } else {
+      $('[name="check[notifiers][email][value]').val('');
+      $('#extraEmails').hide();
+    }
+  });
+  <%if(check.notifiers.email){ %>
+    var fillExtraEmail = function() {
+      var emails = '<%= check.notifiers.email.value %>';
+      emails = emails.replace(/^<%= user.email %>,?/, '');
+      if (emails.length > 0) {
+      }
+      $('#extraEmailInput').val(emails);
+      return emails
+    };
+    $('#extraEmails').show();
+    fillExtraEmail();
+  <% } %>
+  $('#check_form').submit(function(e){
+    if($('#extraEmailInput').val().length > 5){
+      $('[name="check[notifiers][email][value]"]').val($('[name="check[notifiers][email][value]"]').val() + ','+$('#extraEmailInput').val())
+    }
+
+    $('[name="check[allowInvalidSSL]"]').val($('[name="check[allowInvalidSSL]"]').val().replace('on','true'))
+
+
+    console.log( $('[name="check[notifiers][email][value]"]').val());
+
+  });
+  $('#extraEmailInput').tagsInput({
+    defaultText:""
+  });
+
+  var tagField = $('#check_form textarea[name="check[tags]"]');
+  var tags = tagField.val().split(', ');
+  tagField.tagsInput({
+    autocomplete_url:'/api/tags/search',
+    autocomplete: { autoFocus: true }
+  });
+  $('.tagsinput span.tag span').on('click', function() {
+    window.location = '<%= route %>/tags/' + $(this).text();
+  });
+});
+</script>

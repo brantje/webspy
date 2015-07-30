@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>WebSpy</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="<%= route %>/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="<%= route %>/css/style.css">
+
+    <!-- touch icons -->
+    <link rel="apple-touch-icon" href="<%= route %>/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="<%= route %>/apple-touch-icon-ipad.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="<%= route %>/apple-touch-icon-iphone4.png">
+
+    <!-- Morris Charts CSS -->
+    <link href="<%= route %>/css/plugins/morris.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="<%= route %>/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <%- renderCssTags(addedCss) %>
+    <script src="<%= route %>/vendor/jquery/dist/jquery.min.js"></script>
+    <script src="<%= route %>/javascripts/bootstrap.min.js"></script>
+    <script src="<%= route %>/javascripts/jquery-ui.autocomplete.min.js"></script>
+    <% if(typeof user ==="object"){ %>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io.connect(location.protocol + '//' + location.hostname);
+    </script>
+    <% } %>
+    <script src="<%= route %>/vendor/moment/min/moment.min.js"></script>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script type="text/javascript" src="path/to/flashcanvas.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+<div id="wrapper">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="<%= route %>">WebSpy</a>
+        </div>
+        <!-- Top Menu Items -->
+        <% if(typeof user ==="object"){ %>
+
+        <ul class="nav navbar-right top-nav">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle alerttoggle" data-toggle="dropdown"><i class="fa fa-bell"></i><span class="alert-badge" data-count="0" style="display: none;"></span> <b class="caret"></b></a>
+                <ul class="dropdown-menu alert-dropdown">
+                    <li>
+                        <a href="#">Alert Name <span class="label label-default">Alert Badge</span></a>
+                    </li>
+                    <li>
+                        <a href="#">Alert Name <span class="label label-primary">Alert Badge</span></a>
+                    </li>
+                    <li>
+                        <a href="#">Alert Name <span class="label label-success">Alert Badge</span></a>
+                    </li>
+                    <li>
+                        <a href="#">Alert Name <span class="label label-info">Alert Badge</span></a>
+                    </li>
+                    <li>
+                        <a href="#">Alert Name <span class="label label-warning">Alert Badge</span></a>
+                    </li>
+                    <li>
+                        <a href="#">Alert Name <span class="label label-danger">Alert Badge</span></a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#">View All</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <%= user.user%> <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="<%= route %>/settings"><i class="fa fa-fw fa-gear"></i> Settings</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="<%= route %>/signout"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <% } %>
+        <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+        <% if(typeof user ==="object"){ %>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav side-nav">
+                <li>
+                    <a href="<%= route %>"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="<%= route %>/events"><i class="fa fa-fw fa-bell"></i> Events</a>
+                </li>
+                <li>
+                    <a href="<%= route %>/checks"><i class="fa fa-fw fa-check"></i> Checks</a>
+                </li>
+                <li>
+                    <a href="<%= route %>/tags"><i class="fa fa-fw fa-tags"></i> Tags</a>
+                </li>
+                <% if(user.isAdmin){ %>
+                <li>
+                    <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> Admin <i class="fa fa-fw fa-caret-down"></i></a>
+                    <ul id="demo" class="collapse">
+                        <li>
+                            <a href="<%= route %>/admin/settings">WebSpy Settings</a>
+                        </li>
+                        <li>
+                            <a href="<%= route %>/admin/users">Users</a>
+                        </li>
+                    </ul>
+                </li>
+                <% } %>
+            </ul>
+            <ul class="nav navbar-nav navbar-right check_summary">
+                <li class="all_up" style="display:none;"><span class="label label-success">Up</span><strong class="green">0</strong></li>
+                <li class="all_down" style="display: none;"><span class="label label-danger">Down</span><strong class="red">0</strong></li>
+            </ul>
+        </div>
+        <% } %>
+        <!-- /.navbar-collapse -->
+    </nav>
+
+    <div id="page-wrapper">
+
+        <div class="container-fluid">
+            <%- body %>
+        </div>
+        <!-- /.container-fluid -->
+
+    </div>
+    <!-- /#page-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+<% if(typeof user ==="object"){ %>
+<script>
+    var user = <%- JSON.stringify(user) %>
+    var nbNewEvents = 0;
+    var loadedAt = new Date();
+    $(document).ready(function() {
+        $('.alerttoggle').click(function(){
+           nbNewEvents = 0;
+            $('.alert-badge').hide();
+        });
+
+
+        $( document ).ajaxError(function(event,xhr,settings,error) {
+            /*console.log('Ajax error:')
+             console.log(event,xhr,settings,error);*/
+            if(xhr.status === 403 && window.location.pathname !== '/dashboard/login'){
+                //window.location.href = "<%= route %>/signout";
+            }
+        });
+        var changeFavicon = function(red) {
+            $('head link[rel="shortcut icon"]').remove();
+            $('head').append('<link rel="shortcut icon" type="image/x-icon" href="/dashboard/favicon' + (red ? '_red' : '') + '.ico">')
+        }
+        var updateCounts = function() {
+            $.getJSON('/api/checks/count', function(count) {
+                if (count.total > 0) {
+                    $('.all_up').show().children('strong').text(count.up);
+                } else {
+                    $('.all_up').hide();
+                }
+                if (count.down > 0) {
+                    $('.all_down').show().children('strong').text(count.down);
+                    changeFavicon(true);
+                } else {
+                    $('.all_down').hide();
+                    if (nbNewEvents > 0) {
+                        changeFavicon(false);
+                    }
+                }
+                $('.dash_up').children('strong').text(count.up);
+                $('.dash_down').children('strong').text(count.down);
+                $('.dash_paused').children('strong').text(count.paused);
+                $('.dash_total').children('strong').text(count.total);
+                $('body').trigger('UpdateCount',[count]);
+                if (nbNewEvents > 0 && !isActive) {
+                    document.title = '(' + nbNewEvents +') WebSpy';
+                };
+                if(nbNewEvents > 0){
+                    $('.alert-badge').show().attr('data-count',nbNewEvents);
+                } else {
+                    $('.alert-badge').hide();
+                }
+            });
+        };
+
+        var updateEvents = function() {
+            $.getJSON('/api/pings/events?limit=5', function (events) {
+                var graphDataArr = [];
+                var html = '';
+                $.each(events, function (day, events) {
+                    $.each(events, function (k, event) {
+                        /** Recent event stuff */
+                        var msg;
+                        var label = (event.message == 'paused' || event.message == 'restarted') ? 'info' : (event.message == 'up') ? 'success' : 'danger'
+                        switch (event.message) { // cannot close ejs tag here or compilation fails, sorry
+                            case 'paused':
+                            case 'restarted':
+                                msg = 'was ' + event.message;
+                                break;
+                            case 'down':
+                                msg = 'went down (' + event.details + ')';
+                                break;
+                            case 'up':
+                                if (event.downtime) {
+                                    msg = 'went back up after ' + moment.duration(event.downtime).humanize() + ' of downtime';
+                                } else {
+                                    msg = 'is now up';
+                                }
+                                break;
+                            default:
+                                msg = 'unnown event';
+                        }
+
+                        var line = '<li><a href="<%= route %>' + '/checks/' + event.check._id + '"><div><span class="label label-default" title="' + moment(event.timestamp) + '">' + moment(event.timestamp).format('HH:mm') + '</span> <span class="label label-' + label + '">' + event.message + '</span> ' + event.check.name + ' ' + msg + '</div></a></li>'
+                        if (k < 10) {
+                            html += line
+                        }
+                    });
+
+                });
+                html +='<li class="divider"></li><li><a href="<%= route %>/events">View All</a></li>';
+                $('.alert-dropdown').html(html);
+            });
+        }
+        socket.on('CheckEvent', function(data) {
+            if(data.owner != user._id){
+                return;
+            }
+            nbNewEvents++;
+            updateCounts();
+            updateEvents();
+            $('.check_summary').fadeOut().fadeIn().fadeOut().fadeIn();
+        });
+        socket.on('disconnect',function(){
+            console.log('socket closed');
+            io.connect(location.protocol + '//' + location.hostname);
+        });
+        updateCounts();
+        updateEvents();
+        var isActive = true;
+
+        window.onfocus = function () {
+            isActive = true;
+            nbNewEvents = 0;
+            document.title = 'WebSpy';
+        };
+
+        window.onblur = function () {
+            isActive = false;
+        };
+    });
+</script>
+<% } %>
+</body>
+
+</html>

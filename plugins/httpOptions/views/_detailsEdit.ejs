@@ -1,0 +1,17 @@
+<script src="/httpOptions/javascripts/jquery.autoresize.js"></script>
+  <div class="form-group">
+    <label class="control-label">HTTP Options</label>
+      <textarea name="check[http_options]" class="form-control" rows="3" placeholder="Use YAML format, e.g method: HEAD"/><%= check.getPollerParam('http_options') || '' %></textarea>
+      <span class="help-inline">See the
+        <% if (check.type === "http") { %>
+        <a target="_blank" href="http://nodejs.org/api/http.html#http_http_request_options_callback">Node.js HTTP
+        <% } else { %>
+        <a target="_blank" href="http://nodejs.org/api/https.html#https_https_request_options_callback">Node.js HTTPS
+        <% } %>
+        documentation</a> for a list of available options</span>
+  </div>
+<script type="text/javascript">
+jQuery(function($) {
+  $('#check_form textarea[name="check[http_options]"]').autoResize();
+});
+</script>

@@ -1,0 +1,45 @@
+<script src="<%= route %>/javascripts/checkState.js"></script>
+<div style="float: right;">
+
+</div>
+<h1 class="page-header">
+  <div class="pull-right">
+    <small id="check_24h"></small>
+  </div>
+  Edit check "<%= check.name %>"
+  <a href="<%= check.url %>" target="_blank"><img src="<%= route %>/images/external-link-ltr-icon.png"></a>
+</h1>
+<% if (info.length) { %>
+<div class="alert alert-success"><%= info %></div>
+<% } %>
+<%- partial('_check_details', { check: check, pollerCollection: pollerCollection, pollerDetails: pollerDetails, route: route, isNewCheck: true }) %>
+<div>
+</div>
+<script>
+jQuery(document).ready(function($) {
+  // highlight current section in main nav
+  $('.navbar-inner li').eq(1).addClass('active');
+
+  // update check state live
+  updateCheckState(<%- JSON.stringify(check) %>);
+  socket.on('CheckEvent', function() {
+    $.getJSON('/api/checks/<%= check._id %>', updateCheckState);
+  });
+  
+  // manage pause
+  $('span[name="pause"]').click(function(e) {
+    var button = $(this).children();
+    $.getJSON('/api/checks/<%= check._id %>/pause', function() {
+      if(button.hasClass('fa-pause')) {
+        button.removeClass('fa-pause');
+        button.addClass('fa-play');
+      } else {
+        button.removeClass('fa-play');
+        button.addClass('fa-pause');
+      }
+    });
+    e.preventDefault();
+  });
+
+});
+</script>

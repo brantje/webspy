@@ -1,0 +1,42 @@
+<div id="login-container">
+  <form class="form-signin"  method="post">
+    <% if(errors.length > 0){ %>
+      <div class="alert alert-danger" role="alert"> <%= errors[0] %></div>
+    <% } %>
+    <h2 class="form-signin-heading">Please sign in</h2>
+    <label for="inputEmail" class="sr-only">Username</label>
+    <input type="text" name="user" id="user-tf" class="form-control" placeholder="Username" required autofocus><br />
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" name="pass" id="pass-tf" class="form-control" placeholder="Password" required>
+    <div class="checkbox">
+      <label id="remember-me" class="checkbox">
+        <input name="remember-me" type="checkbox" checked="checked">Remember Me
+      </label>
+    </div>
+    <button button type="submit" id="btn-login"  class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    <br />
+    <div class="pull-left">
+      <a href="<%= route %>/signup" id="create-account">Create An Account</a>
+    </div>
+    <div class="pull-right">
+      <a href="#" id="forgot-password">Forgot Your Password?</a>
+    </div>
+  </form>
+
+  <!--form method="post" id="login-form" class="well span4">
+    <h1>Hello!</h1>
+
+    <p class="subheading">Please Login To Your Account</p>
+    <label>Username </label>
+    <input  class="span4 required">
+    <label>Password</label>
+    <input  class="span4 required">
+    <button type="submit" id="btn-login" class="btn btn-primary"><i class="icon-lock icon-white"></i>Sign in</button>
+    <label id="remember-me" class="checkbox">Remember Me
+      <input type="checkbox" checked="checked">
+    </label>
+    <div class="clear-fix"></div>
+    <hr>
+    <div class="btm-links"></div>
+  </form-->
+</div>

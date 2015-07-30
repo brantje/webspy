@@ -1,0 +1,30 @@
+<h1>
+    Users
+</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <td>Username</td>
+            <td>Name</td>
+            <td>E-mail</td>
+            <td>Role</td>
+            <td>Actions</td>
+        </tr>
+    </thead>
+    <tbody>
+    <%
+        for(var i =0; i< users.length; i++){
+    %>
+        <tr>
+            <td><%= users[i].user %></td>
+            <td><%= users[i].name %></td>
+            <td><%= users[i].email %></td>
+            <td><%= (users[i].isAdmin) ? 'Admin' : 'User' %></td>
+            <td><i class="fa fa-pencil" title="Edit"></i> <i class="fa fa-trash" title="Delete"></i> <i class="fa fa-ban" title="Ban"></i> </td>
+        </tr>
+    <%
+        }
+    %>
+    </tbody>
+</table>

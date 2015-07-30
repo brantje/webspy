@@ -1,0 +1,210 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <h1>Settings</h1>
+
+        <form method="post">
+          <!-- Nav tabs -->
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Account
+                settings</a></li>
+            <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Notification
+                settings</a></li>
+            <li role="presentation"><a href="#api" aria-controls="api" role="tab" data-toggle="tab">API Tokens</a></li>
+            <li role="presentation"><a href="#sessions" aria-controls="api" role="tab" data-toggle="tab">Sessions</a></li>
+          </ul>
+
+          <!-- Tab panes -->
+          <div class="tab-content">
+            <div role="tabpanel " class="tab-pane in fade active" id="home">
+              <div class="col-xs-12 col-sm-12 col-md-12 nopadding">
+                <h2>Account settings</h2>
+                <div class="col-xs-6 col-sm-4 col-md-2 nopadding">
+                  <label>Name<input type="text" value="<%= user.name %>" name="settings[name]" class="form-control"></label>
+                  <label>E-mail <input type="text" value="<%= user.email %>" name="settings[email]" class="form-control"></label>
+                  <label>Current password <input type="password" name="settings[oldpw]" class="form-control"></label>
+                  <label>New password <input type="password" name="settings[newpw]" class="form-control"></label>
+                  <label>new password (repeat)<input type="password" name="settings[newpwr]" class="form-control"> </label>
+                </div>
+              </div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="profile">
+              <h2>Notification settings</h2>
+
+              <div class="checkbox">
+                <label class="checkbox">
+                  <input type="checkbox" name="notifications[email][value]" value="<%= user.email %>"
+                  <% if(user.email === user.notificationSettings.email.value) { %>
+                          checked="checked"
+                  <% } %>
+
+                  >E-mail
+                </label>
+              </div>
+              <div class="checkbox">
+                <label class="checkbox">
+                  <input type="checkbox" id="pushBullet"
+                   <% if(user.notificationSettings.pushbullet.apikey !== "") { %>
+                     checked="checked"
+                  <% } %> > Pushbullet<br/>
+                </label>
+                  <div id="pushBulletSettings" style="display: none">
+                    API Key: <input class="form-control" style="max-width: 200px;" type="text" value="<%= user.notificationSettings.pushbullet.apikey %>"
+                                    name="notifications[pushbullet][apikey]" placeholder="Enter your Pushbullet api key">
+                  </div>
+
+              </div>
+              <div class="checkbox">
+                <label class="checkbox">
+                  <input type="checkbox" id="statusHub"
+                          <% if(user.notificationSettings.statushub.apikey) { %>
+                         checked="checked"
+                          <% } %>
+                          > Statushub<br/>
+                </label>
+                  <div id="statusHubSettings" style="display: none">
+                    Subdomains: <input class="form-control" style="max-width: 200px;" type="text"
+                                       name="notifications[statushub][subdomains]"
+                                       placeholder="Comma seperated list of subdomains">
+                    API Key: <input class="form-control" style="max-width: 200px;" type="text"
+                                    name="notifications[statushub][apikey]" placeholder="Enter your Pushbullet api key">
+                  </div>
+
+              </div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="api">
+              <div class="col-md-6">
+                <h3>Add api key</h3>
+                    <label>Name<input type="text" placeholder="Enter a name" id="apiKeyName" class="form-control"></label>
+                    <input id='apiC' type="button" value="Create api key">
+              </div>
+              <div class="col-md-6 pull-left">
+                <h3>Your api access tokens</h3>
+                <ul class="apiKeys">
+                  <%  user.apiKeys.forEach(function(el, index) {
+                      var apiKey = user.apiKeys[index];
+                  %>
+                    <li>
+                      <% if(index !== 0){ %>
+                        <div class="pull-right"><i key="<%= apiKey.apiKey %>" class="fa fa-trash-o"></i> </div>
+                      <% } %>
+                      <div>Name: <%= apiKey.name %></div>
+                      <div>Created: <%= moment(apiKey.created).format('LL HH:mm') %></div>
+                      <div>Last used: <%
+                        if(apiKey.lastAccessed ===0){ %>
+                              Never
+                        <% } else {%>
+                          <%= moment.duration(new Date() - apiKey.lastAccessed).humanize() %> ago
+                        <% }  %>
+                        <div>API Key: <input type="text" value="<%= apiKey.apiKey %>" class="apikey"></div>
+                      </div>
+                    </li>
+                  <% }); %>
+                </ul>
+              </div>
+            </div> <div role="tabpanel" class="tab-pane fade" id="sessions">
+              <h2>Your active sessions</h2>
+              <ul class="sessions">
+                <%  sessions.forEach(function(el, index) {
+                  var session = sessions[index];
+                %>
+                <li>
+                  <div class="pull-right"><i class="fa fa-trash-o" session-id="<%= session._id %>"></i> </div>
+                  <% if(curSession.sessionHash === session.sessionHash){ %>
+                   [current session]
+                  <% } %>
+                  <div>IP: <%= session.ip %></div>
+                  <div>Created: <%= moment(session.date).format('LL HH:mm') %></div>
+                  <div>Last used: <%
+                    if(session.lastAction ===0){ %>
+                    Never
+                    <% } else {%>
+
+                    <%= moment.duration(new Date() - session.lastAction).humanize() %> ago
+                    <% }  %>
+                    <div>Browser: <%= session.userAgent %></div>
+                  </div>
+                </li>
+                <% }); %>
+              </ul>
+            </div>
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    if($('#pushBullet').is(':checked')) {
+      $('#pushBulletSettings').show();
+    }
+    if($('#statusHub').is(':checked')) {
+      $('#pushBulletSettings').show();
+    }
+
+    $('#pushBullet').click(function () {
+      if ($(this).is(':checked')) {
+        $('#pushBulletSettings').show();
+      } else {
+        $('#pushBulletSettings').hide();
+      }
+    });
+    $('#statusHub').click(function () {
+      if ($(this).is(':checked')) {
+        $('#statusHubSettings').show();
+      } else {
+        $('#statusHubSettings').hide();
+      }
+    });
+    $(".apikey").focus(function() { $(this).select(); } );
+
+    $('.sessions .fa-trash-o').click(function(){
+      var sessionId = $(this).attr('session-id');
+      var _ele = $(this);
+      $.ajax({
+        url: '<%= route %>/settings/endsession/'+sessionId,
+        type: 'DELETE',
+        success: function(result) {
+          _ele.parent().parent().slideUp();
+        }
+      });
+    })
+
+    $('.apiKeys .fa-trash-o').click(function(){
+      var key = $(this).attr('key');
+      var _ele = $(this);
+      $.ajax({
+        url: '<%= route %>/settings/apikey/'+key,
+        type: 'DELETE',
+        success: function(result) {
+          _ele.parent().parent().slideUp();
+        }
+      });
+    })
+
+
+
+    $('#apiC').click(function(){
+      if($('#apiKeyName').val()==''){
+        return;
+      }
+      $.post('<%= route%>/settings/apikey',{name: $('#apiKeyName').val() },function(r){
+        var apiKey = r.newKey;
+        var tmpl =  [' <li>',
+                    '<div class="pull-right"><i class="fa fa-trash-o"></i> </div>',
+                    '<div>Name:'+  apiKey.name +'</div>',
+                    '<div>Created: '+ moment(apiKey.created).format('LL HH:mm') +'</div>',
+                    '<div>Last used: Never',
+                    '<div>API Key: <input type="text" value="'+ apiKey.apiKey +'" class="apikey"></div>',
+                    '</div>',
+                    '</li>'];
+        $('.apiKeys').append(tmpl.join(''));
+        $('#apiKeyName').val('')
+      });
+    })
+
+  });
+</script>

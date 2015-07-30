@@ -1,0 +1,21 @@
+{
+    "apps" : [
+        {
+            "name" : "uptime-dashboard",
+            "script": "app.js",
+            "out_file": "/opt/logs/uptime/dashboard.log",
+            "error_file": "/opt/logs/uptime/dashboard.log",
+            "instances" : "1",
+            "env": { "NODE_ENV": "production" }
+        },
+        {
+            "name" : "uptime-monitor",
+            "script": "monitor.js",
+            "out_file": "/opt/logs/uptime/monitor.log",
+            "error_file": "/opt/logs/uptime/monitor.log",
+            "instances" : "1",
+            "env": { "NODE_ENV": "production" }
+        }
+    ]
+}
+
