@@ -1,3 +1,7 @@
+<ol class="breadcrumb">
+    <li><a href="#">Admin</a></li>
+    <li class="active">Users</li>
+</ol>
 <h1>
     Users
 </h1>
@@ -21,7 +25,7 @@
             <td><%= users[i].name %></td>
             <td><%= users[i].email %></td>
             <td><%= (users[i].isAdmin) ? 'Admin' : 'User' %></td>
-            <td><i class="fa fa-pencil" title="Edit"></i> <i class="fa fa-trash" title="Delete"></i> <i class="fa fa-ban" title="Ban"></i> </td>
+            <td><a href="<%= route %>/admin/user/edit/<%= users[i]._id %>"><i class="fa fa-pencil" title="Edit"></i></a> <i class="fa fa-trash" title="Delete"></i> <i class="fa fa-ban" title="Ban"></i> </td>
         </tr>
     <%
         }

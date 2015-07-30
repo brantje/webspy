@@ -31,9 +31,13 @@ Setting.statics.get = function (name,callback) {
   });
 };
 
-Setting.statics.getAll = function () {
-  this.db.collection('settings').find({}, function(e,r){
-      return r;
+Setting.statics.getAll = function (callback) {
+  this.db.collection('settings').find().toArray(function(err,docs){
+    var settings = {};
+    for(var i =0; i < docs.length; i++){
+      settings[docs[i].name] = docs[i].value;
+    }
+    callback(settings);
   });
 };
 

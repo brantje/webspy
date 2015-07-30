@@ -23,6 +23,10 @@ Account.statics.getAll = function(callback) {
   return this.db.model('Account').find({}, callback);
 };
 
+Account.statics.getById = function(id,callback) {
+  return this.db.model('Account').find({_id: id}, callback);
+};
+
 Account.statics.userExist = function(user, callback) {
   return this.db.model('Account').findOne({user: user.user}, callback);
 };

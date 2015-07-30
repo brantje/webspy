@@ -16,7 +16,7 @@ var CheckMonthlyStat = require('../../models/checkMonthlyStat');
 var moduleInfo = require('../../package.json');
 var Account = require('../../models/user/accountManager');
 var Setting = require('../../models/setting');
-
+var merge = require('merge');
 
 module.exports = function(app) {
 
@@ -41,7 +41,10 @@ module.exports = function(app) {
   };
 
   app.get('/admin/settings', isAuthed, isAdmin, function (req, res) {
-    res.render('admin/settings');// {errors: [], user: o, sessions: sessions,curSession: req.session.sessionHash});
+    Setting.getAll(function(settings){
+      res.render('admin/settings',{settings: settings});// {errors: [], user: o, sessions: sessions,curSession: req.session.sessionHash});
+    });
+
   });
 
   app.post('/admin/settings', isAuthed, isAdmin, function (req, res) {
@@ -63,4 +66,32 @@ module.exports = function(app) {
     });
   });
 
+  app.get('/admin/user/edit/:id', isAuthed, isAdmin, function (req, res) {
+      Account.getById(req.params.id,function(e,r){
+        res.render('admin/editUser',{user: r[0]});
+      });
+  });
+
+  app.post('/admin/user/edit/:id', isAuthed, isAdmin, function(req, res){
+    var data = req.param('user');
+    data.isAdmin = (data.isAdmin == 'true');
+    Account.getById(req.params.id,function(e,r){
+      var user = r[0];
+      console.log(user.id);
+      if (data.password==="") {
+        delete data.password;
+        Account.update({_id: user.id}, data, {upsert: false}, function (err, r) {
+          res.redirect('admin/user/edit/'+req.params.id);
+        });
+      } else {
+        Account.saltAndHash(data.password, function (hash) {
+          data.pass = hash;
+          console.log(data)
+          Account.update({_id: user.id}, data, {upsert: false}, function (err, r) {
+            res.redirect('admin/user/edit/'+req.params.id);
+          });
+        });
+      }
+    });
+  });
 };

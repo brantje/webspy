@@ -1,7 +1,7 @@
 {
-  "name": "node-uptime",
+  "name": "WebSpy",
   "description": "Remote monitoring for HTTP applications",
-  "version": "3.2.0",
+  "version": "0.0.5",
   "author": "Francois Zaninotto",
   "dependencies": {
     "async": "0.1.22",
@@ -25,7 +25,8 @@
     "socket.io": "0.9.14",
     "spdy": "1.30.1",
     "tcp-ping": "0.1.1",
-    "webpagetest": "0.2.0"
+    "webpagetest": "0.2.0",
+    "merge": "~1.2.0"
   },
   "devDependencies": {
     "mocha": "1.7.x",

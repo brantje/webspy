@@ -1,0 +1,60 @@
+<ol class="breadcrumb">
+    <li><a href="#">Admin</a></li>
+    <li><a href="<%= route %>/admin/users">Users</a></li>
+    <li class="active">Edit user <%= user.name %></li>
+</ol>
+<div class="row center-block">
+    <div class="col-xs-12">
+        <h1>Edit user <%= user.name %></h1>
+
+        <form method="post" autocomplete="off">
+            <table class="table table-striped table-bordered">
+                <tr>
+                    <td>
+                        Name
+                    </td>
+                    <td>
+                        <input type="text" value="<%= user.name %>" name="user[name]">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Username
+                    </td>
+                    <td>
+                        <input type="text" value="<%= user.user %>" name="user[user]">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        E-mail
+                    </td>
+                    <td>
+                        <input type="text" value="<%= user.email %>" name="user[email]">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Password<br>
+                        <small>If empty it will not be changed</small>
+                    </td>
+                    <td>
+                        <input type="password" value="" name="user[password]">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Role
+                    </td>
+                    <td>
+                        <select name="user[isAdmin]">
+                            <option value="false">User</option>
+                            <option value="true" <%= (user.isAdmin == true) ? 'selected' : '' %>>Admin</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <input type="submit" class="btn btn-success" value="Save">
+        </form>
+    </div>
+</div>
