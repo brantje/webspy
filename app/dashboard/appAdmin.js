@@ -86,12 +86,22 @@ module.exports = function(app) {
       } else {
         Account.saltAndHash(data.password, function (hash) {
           data.pass = hash;
-          console.log(data)
+          console.log(data);
           Account.update({_id: user.id}, data, {upsert: false}, function (err, r) {
             res.redirect('admin/user/edit/'+req.params.id);
           });
         });
       }
+    });
+  });
+  app.post('/admin/user/action/:id/:action', isAuthed, isAdmin, function(req, res) {
+    var data = req.param('user');
+    Account.getById(req.params.id, function (e, r) {
+      var user = r[0];
+      console.log(user.id);
+      Account.update({_id: user.id}, data, {upsert: false}, function (err, r) {
+        res.redirect('admin/user/edit/'+req.params.id);
+      });
     });
   });
 };

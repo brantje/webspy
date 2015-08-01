@@ -14,7 +14,8 @@ var Account = new Schema({
   date         : String,
   notificationSettings: Object,
   apiKeys: Array,
-  isAdmin     : Boolean
+  isAdmin     : Boolean,
+  status:  { type: Number, default: 1 } // 0 = Not yet activated, 1= active, 2 = banned
 });
 Account.plugin(require('mongoose-lifecycle'));
 
