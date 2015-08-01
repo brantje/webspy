@@ -52,6 +52,9 @@ Account.statics.isUserAuthed =  function(req,loggedInCallback,errorCallback){
      *
      */
     var _self = this;
+    /**
+     * @fixme: handle banned accounts
+     */
     this.db.model('Account').find({apiKeys:{ $elemMatch: {apiKey: req.query.apikey } } },function(e,user){
       if(user === null){
         errorCallback(req);
@@ -154,7 +157,8 @@ Account.statics.deleteApiKey =  function(apikeyHash,user,cb) {
   });
 };
 
-Account.statics.createUser = function(req,callback){
+Account.statics.createUser = function(req,callback,session){
+  session = (session == undefined) ? true : false;
   var newUser = {};
   var errors = [];
   var apiKey = [{
@@ -219,19 +223,23 @@ Account.statics.createUser = function(req,callback){
                 // append date stamp when record was created //
                 newUser.date = moment().format('MMMM Do YYYY, h:mm:ss a');
                 _self.db.collection('accounts').insert(newUser, function (e, r) {
-                  var userAgent = req.headers['user-agent'];
-                  var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-                  Session.startSession(newUser, ip, userAgent, function (session) {
-                    delete session[0].userAgent;
-                    delete session[0].lastAction;
-                    delete session[0].date;
-                    req.session.sessionHash = session[0];
-                    var returnObj = {
-                      session: session[0],
-                      user: newUser
-                    };
-                    callback(returnObj);
-                  });
+                  if(session){
+                    var userAgent = req.headers['user-agent'];
+                    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+                    Session.startSession(newUser, ip, userAgent, function (session) {
+                      delete session[0].userAgent;
+                      delete session[0].lastAction;
+                      delete session[0].date;
+                      req.session.sessionHash = session[0];
+                      var returnObj = {
+                        session: session[0],
+                        user: newUser
+                      };
+                      callback(returnObj);
+                    });
+                  } else {
+                    callback(r)
+                  }
                 });
               });
             })

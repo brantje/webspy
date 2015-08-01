@@ -350,7 +350,9 @@ ul.nav-tabs li span {
     font-size: 20px;
   }
 }
-
+.users .fa{
+    cursor: pointer;
+}
 /*!
  * Start Bootstrap - SB Admin Bootstrap Admin Template (http://startbootstrap.com)
  * Code licensed under the Apache License v2.0.
@@ -386,7 +388,7 @@ body {
 }
 
 @media(min-width:768px) {
-    #wrapper {
+    #wrapper:not(.not-logged-in) {
         padding-left: 225px;
     }
 

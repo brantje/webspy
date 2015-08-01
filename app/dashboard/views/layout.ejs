@@ -51,7 +51,7 @@
 
 <body>
 
-<div id="wrapper">
+<div id="wrapper" class="<%= (typeof user ==="object") ? 'logged-in' : 'not-logged-in'%>">
 
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">

@@ -23,9 +23,15 @@ module.exports = function(app) {
   //userMiddleware
   var isAuthed = function(req,res,next){
     Account.isUserAuthed(req,function(user){
-      req.user = user;
-      app.locals.user = user;
-      next();
+      if(user.status == 1){
+        req.user = user;
+        app.locals.user = user;
+        next();
+      } else if(user.status == 2) {
+        res.render('banned');
+      } else if(user.status == 0){
+        res.redirect('/dashboard/signout');
+      }
     },function(){
       app.locals.user = false;
       res.redirect('/dashboard/signout');
@@ -61,7 +67,7 @@ module.exports = function(app) {
   app.get('/admin/users', isAuthed, isAdmin, function (req, res) {
 
     Account.getAll(function(e,users){
-      console.log(users);
+
       res.render('admin/users',{users: users});
     });
   });
@@ -77,7 +83,6 @@ module.exports = function(app) {
     data.isAdmin = (data.isAdmin == 'true');
     Account.getById(req.params.id,function(e,r){
       var user = r[0];
-      console.log(user.id);
       if (data.password==="") {
         delete data.password;
         Account.update({_id: user.id}, data, {upsert: false}, function (err, r) {
@@ -86,7 +91,6 @@ module.exports = function(app) {
       } else {
         Account.saltAndHash(data.password, function (hash) {
           data.pass = hash;
-          console.log(data);
           Account.update({_id: user.id}, data, {upsert: false}, function (err, r) {
             res.redirect('admin/user/edit/'+req.params.id);
           });
@@ -94,14 +98,71 @@ module.exports = function(app) {
       }
     });
   });
-  app.post('/admin/user/action/:id/:action', isAuthed, isAdmin, function(req, res) {
-    var data = req.param('user');
-    Account.getById(req.params.id, function (e, r) {
-      var user = r[0];
-      console.log(user.id);
-      Account.update({_id: user.id}, data, {upsert: false}, function (err, r) {
-        res.redirect('admin/user/edit/'+req.params.id);
-      });
-    });
+
+  app.get('/admin/user/create', isAuthed, isAdmin, function (req, res) {
+    res.render('admin/createUser',{errors:[]});
   });
+
+  app.post('/admin/user/create', isAuthed, isAdmin, function(req, res){
+    Account.createUser(req,function(result){
+      if(result.errors){
+        res.render('admin/createUser',{errors: result.errors});
+      } else {
+        res.redirect('admin/users');
+      }
+    },false);
+  });
+
+
+  app.post('/admin/user/:id/:action', isAuthed, isAdmin, function(req, res) {
+    var data = req.param('user');
+    if(req.params.action === 'ban'){
+      Account.getById(req.params.id, function (e, r) {
+        var user = r[0];
+        var data = {
+          status: 2
+        };
+        Account.update({_id: user.id}, data, {upsert: false}, function (err, r) {
+          if(!err){
+            res.json({ok: true});
+          } else {
+            res.json({ok: false});
+          }
+        });
+      });
+    }
+
+    if(req.params.action === 'unban'){
+      Account.getById(req.params.id, function (e, r) {
+        var user = r[0];
+        var data = {
+          status: 1
+        };
+        Account.update({_id: user.id}, data, {upsert: false}, function (err, r) {
+          if(!err){
+            res.json({ok: true});
+          } else {
+            res.json({ok: false});
+          }
+        });
+      });
+    }
+
+    if(req.params.action === 'delete'){
+      Account.getById(req.params.id, function (e, r) {
+        var user = r[0];
+        var data = {
+          status: 1
+        };
+        Account.remove({_id: user.id}, function (err, r) {
+          if(!err){
+            res.json({ok: true});
+          } else {
+            res.json({ok: false});
+          }
+        });
+      });
+    }
+  });
+
 };

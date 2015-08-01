@@ -80,9 +80,15 @@ require('./appAdmin')(app);
 //userMiddleware
 var isAuthed = function(req,res,next){
   Account.isUserAuthed(req,function(user){
-    req.user = user;
-    app.locals.user = user;
-    next();
+    if(user.status == 1){
+      req.user = user;
+      app.locals.user = user;
+      next();
+    } else if(user.status == 2) {
+      res.render('banned');
+    } else if(user.status == 0){
+      res.redirect('/dashboard/signout');
+    }
   },function(){
     app.locals.user = false;
     res.redirect('/dashboard/signout');

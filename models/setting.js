@@ -1,12 +1,10 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var moment = require('moment');
-var assert = require('assert');
 
 // main model
 var Setting = new Schema({
   name: String,
-  value: String,
+  value: String
 });
 Setting.plugin(require('mongoose-lifecycle'));
 
@@ -20,14 +18,20 @@ Setting.statics.save = function (name, value, callback) {
 
   });
 };
-Setting.statics.get = function (name,callback) {
-  this.db.collection('settings').findOne({name: name}, function(e,r){
+Setting.statics.get = function (name,callback,defaultValue) {
+  defaultValue = (defaultValue) ? defaultValue : '';
+  this.find({name: name}, function(e,r){
       if(!e){
-        callback(r.value);
+        if(r.length > 0){
+          callback(r.value);
+        } else {
+          var r = (name == "allow_registrations") ? true : defaultValue;
+          callback(r);
+        }
       } else {
-        return null;
+        var r = (name == 'allow_registrations') ? true : defaultValue;
+        callback(defaultValue);
       }
-
   });
 };
 
