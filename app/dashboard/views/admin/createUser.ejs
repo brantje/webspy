@@ -1,0 +1,62 @@
+<ol class="breadcrumb">
+    <li><a href="#">Admin</a></li>
+    <li><a href="<%= route %>/admin/users">Users</a></li>
+    <li class="active">Create user</li>
+</ol>
+<div class="row center-block">
+    <div class="col-xs-12">
+        <h1>Create user</h1>
+        <% if(errors.length > 0){ %>
+        <div class="alert alert-danger" role="alert">
+            <% for(var i=0; i < errors.length; i++) { %>
+            <div><%= errors[i] %></div>
+            <% }%>
+        </div>
+        <% } %>
+        <form method="post" autocomplete="off">
+            <table class="table table-striped table-bordered">
+                <tr>
+                    <td>
+                        Name
+                    </td>
+                    <td>
+                        <input id="name-tf" type="text" name="name" class="form-control" required autofocus><br />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Username
+                    </td>
+                    <td>
+                        <input id="user-tf" type="text" name="user" class="form-control" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        E-mail
+                    </td>
+                    <td>
+                        <input id="email-tf" type="email" name="email" class="form-control" required><br />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Password<br>
+                    </td>
+                    <td>
+                        <input type="password" name="pass" class="form-control" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Password (again)<br>
+                    </td>
+                    <td>
+                        <input type="password" type="password" name="passr" class="form-control" required>
+                    </td>
+                </tr>
+            </table>
+            <input type="submit" class="btn btn-success" value="Save">
+        </form>
+    </div>
+</div>
