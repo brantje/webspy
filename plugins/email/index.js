@@ -58,7 +58,16 @@ var ejs = require('ejs');
 
 exports.initWebApp = function (options) {
   var config = options.config.email;
-  var mailer = nodemailer.createTransport(config.method, config.transport);
+  if(config.transport.requiresAuth){
+    var mailer = nodemailer.createTransport(config.method, config.transport);
+  } else {
+    var mailer = nodemailer.createTransport(config.method, {
+      host: config.transport.host, // hostname
+      secureConnection: false,
+      port: config.transport.port
+    });
+  }
+
   var templateDir = __dirname + '/views/';
   CheckEvent.on('afterInsert', function (checkEvent) {
     if (!config.event[checkEvent.message]) return;
