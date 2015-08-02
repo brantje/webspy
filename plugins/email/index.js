@@ -58,7 +58,8 @@ var ejs = require('ejs');
 
 exports.initWebApp = function (options) {
   var config = options.config.email;
-  if(config.transport.requiresAuth){
+  console.log(config.requiresAuth);
+  if(config.requiresAuth){
     var mailer = nodemailer.createTransport(config.method, config.transport);
   } else {
     var mailer = nodemailer.createTransport(config.method, {

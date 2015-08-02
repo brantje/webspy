@@ -48,11 +48,11 @@ plugins:
 
 email:
   method:      SMTP  # possible methods are SMTP, SES, or Sendmail
+  requiresAuth: false
   transport:         # see https://github.com/andris9/nodemailer for transport options
     host: "127.0.0.1"
     port: 25
     secureConnection: false
-    requiresAuth: false
     #domains: ['localhost','webspy.io']
     #debug: true
     auth:
