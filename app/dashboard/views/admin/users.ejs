@@ -40,7 +40,9 @@
             var userId = el.attr('data-user');
             var action = el.attr('data-action');
             $.post('<%= route %>/admin/user/'+ userId +'/'+action,function(r){
-
+                if(action === "delete"){
+                    el.parent().parent().remove();
+                }
             });
         });
     })

@@ -215,6 +215,7 @@ $(document).ready(function() {
     var fillExtraEmail = function() {
       var emails = '<%= check.notifiers.email.value %>';
       emails = emails.replace(/^<%= user.email %>,?/, '');
+      emails = emails.replace(/^on,?/, '');
       if (emails.length > 0) {
       }
       $('#extraEmailInput').val(emails);

@@ -196,6 +196,19 @@ app.put('/checks/:id',isAuthed, function(req, res, next) {
      res.redirect(app.route + '/checks/' + req.params.id);
      }*/
     check.notifiers = req.param('check').notifiers;
+
+    if(check.notifiers.email.value){
+      var adresses = check.notifiers.email.value.split(',');
+      if(adresses.indexOf(req.user.email) === -1){
+        adresses.push(req.user.email);
+      }
+      if(adresses.indexOf('on') >= 0){
+        adresses.splice(adresses.indexOf('on'), 1);
+      }
+      console.log(adresses);
+      check.notifiers.email.value = adresses.join(',');
+      console.log(check)
+    }
     check.save(function(err2) {
       if (err2) return next(err2);
       req.flash('info', 'Changes have been saved');
