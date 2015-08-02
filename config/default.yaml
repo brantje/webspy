@@ -1,5 +1,5 @@
 url: 'https://localhost:8443'
-
+displayUrl: '';
 mongodb:
   server: localhost
   database: uptime

@@ -85,7 +85,7 @@ exports.initWebApp = function (options) {
       var renderOptions = {
         check: check,
         checkEvent: checkEvent,
-        url: options.config.url,
+        url: (options.config.displayUrl !='') ? options.config.displayUrl : options.config.url,
         moment: moment,
         filename: filename
       };
