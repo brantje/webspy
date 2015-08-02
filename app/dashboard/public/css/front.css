@@ -49,3 +49,9 @@ Additional Styles (required)
 .nomargin{
     margin: 0px;
 }
+
+@media screen and (max-width: 768px) {
+    #page-wrapper{
+        margin-top: 150px;
+    }
+}
