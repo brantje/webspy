@@ -16,6 +16,7 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<%= route %>dashboard/css/style.css">
+    <link rel="stylesheet" href="<%= route %>dashboard/css/front.css">
 
     <!-- touch icons -->
     <link rel="apple-touch-icon" href="<%= route %>dashboard/apple-touch-icon.png">
@@ -43,7 +44,7 @@
 
 <body>
 
-<div id="wrapper">
+<div id="wrapper" class="not-logged-in">
 
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -96,14 +97,12 @@
         } else {
             loadSection('#home');
         }
-        console.log(location);
         $('.mainnav a').click(function(evt){
             var target = $(this).attr('href');
             if(target == '#'){
                 target = '#home';
             }
             loadSection(target)
-
         });
     })
 </script>

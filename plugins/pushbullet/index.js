@@ -56,19 +56,21 @@ exports.initWebApp = function () {
       }
       var pusher = new PushBullet(check.notifiers.pushbullet.apikey);
       var message;
+      var baseUrl = (options.config.displayUrl !='') ? options.config.displayUrl : options.config.url;
       if (checkEvent.message === 'up') {
         message = check.name + ' went back up after ' + moment.duration(checkEvent.downtime).humanize() + ' of downtime';
       } else {
         message = "The application " + check.name + " just went to status " + checkEvent.message
       }
       var msg = {
-        message: message,
-        title: "Uptime Status",
+        title: message,
+        //title: "WebSpy Status",
         sound: 'magic', // optional
-        priority: 1 // optional
+        priority: 1, // optional
+        url: baseUrl+'/dashboard/checks/'+ check._id +'?type=hour&date='+ checkEvent.timestamp.valueOf()
       };
       var deviceParams = {};
-      pusher.note(deviceParams, msg.title, msg.message, function (error, response) {
+      pusher.link(deviceParams, msg.title, msg.message, function (error, response) {
         // response is the JSON response from the API
       });
       /*var push     = new pushover({

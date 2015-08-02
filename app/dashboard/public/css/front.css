@@ -1,0 +1,51 @@
+#myCarousel{
+    margin-top: 20px;
+}
+/*#####################
+Additional Styles (required)
+######################*/
+.carousel-indicators {
+    top: -26px;
+    bottom: initial !important;
+    width:100%;
+    background:#D6D6D6;
+    padding: 6px 0px;
+    margin-left:0;
+    left: 0px;
+    -webkit-border-top-left-radius: 15px;
+    -webkit-border-top-right-radius: 15px;
+    -moz-border-radius-topleft: 15px;
+    -moz-border-radius-topright: 15px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    /*border-top:2px solid #fff;*/
+}
+.carousel-indicators li {
+    width:12px;
+    height:12px;
+    background:#fff;
+    border-color:#fff;
+}
+.carousel-indicators .active {
+    width:14px;
+    height:14px;
+    background:#428bca;
+    border-color:#428bca;
+}
+.carousel-inner .thumbnail {
+    margin-bottom:0;
+    border-bottom-left-radius:0;
+    border-bottom-right-radius:0;
+}
+.carousel-inner .caption {
+    background:#ddd;
+    padding: 10px;
+    height: 150px;
+}
+
+.nopadding{
+    padding: 0px;
+}
+.nomargin{
+    margin: 0px;
+}

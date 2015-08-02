@@ -205,9 +205,7 @@ app.put('/checks/:id',isAuthed, function(req, res, next) {
       if(adresses.indexOf('on') >= 0){
         adresses.splice(adresses.indexOf('on'), 1);
       }
-      console.log(adresses);
       check.notifiers.email.value = adresses.join(',');
-      console.log(check)
     }
     check.save(function(err2) {
       if (err2) return next(err2);

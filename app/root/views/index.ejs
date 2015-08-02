@@ -2,10 +2,40 @@
     <h1>Welcome to WebSpy</h1>
     <div class="row">
         <div class="col-xs-12 col-md-8">
-
+            <div id="myCarousel" class="carousel slide">
+                <div class="carousel-inner">
+                    <div class="item active">
+                        <a href="#"><img class="thumbnail" src="/dashboard/images/screenshots/dashboard.png" alt="Slide1"></a>
+                        <div class="">
+                            <h4>Sleek Dashboard</h4>
+                            <p>The most important things, in one glance </p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <a href="#"><img class="thumbnail" src="/dashboard/images/screenshots/Checks.png" alt="Slide2"></a>
+                        <div class="">
+                            <h4>Manage your checks</h4>
+                            <p>You can check webservers, smtp servers, and much more!</p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <a href="#"><img class="thumbnail" src="/dashboard/images/screenshots/check.png" alt="Slide3"></a>
+                        <div class="">
+                            <h4>Detailed graphs</h4>
+                            <p> </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Indicators -->
+                <ol class="carousel-indicators">
+                    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                    <li data-target="#myCarousel" data-slide-to="1"></li>
+                    <li data-target="#myCarousel" data-slide-to="2"></li>
+                </ol>
+            </div><!-- End Carousel -->
         </div>
         <div class="col-xs-12 col-md-4">
-            <h3>Download now from github!</h3>
+            <h3 class="nomargin nopadding">Download now from github!</h3>
             <b></b>
         </div>
     </div>
@@ -41,3 +71,11 @@
 <div id="about" class="section" style="display: none;">
     <h1>About</h1>
 </div>
+
+<script>
+    $(document).ready(function(){
+        $('#myCarousel').carousel({
+            interval:   4000
+        });
+    });
+</script>
