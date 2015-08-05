@@ -145,7 +145,12 @@ module.exports = function(cluster,workerProcess) {
 
   app.emit('beforeDashboardRoutes', app, dashboardApp);
   app.use('/dashboard', dashboardApp);
-  app.get('/', rootApp);
+
+  //app.get('/', rootApp);
+  app.get('/', function(req, res, next){
+    res.redirect('/dashboard');
+  });
+
 
   app.get('/favicon.ico', function (req, res) {
     res.redirect(301, '/dashboard/favicon.ico');
