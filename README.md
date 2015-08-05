@@ -158,6 +158,7 @@ Monitoring From Various Locations
 
 You can even run several monitor servers in several datacenters to get average response time. In that case, make sure you set a different `monitor.name` setting for all monitor servers to be able to tell which server make a particular ping.
 
+
 Using Plugins
 -------------
 

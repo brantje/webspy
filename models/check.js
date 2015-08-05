@@ -74,10 +74,11 @@ Check.methods.removeStats = function(callback) {
   ], callback);
 };
 
-Check.methods.needsPoll = function() {
+Check.methods.needsPoll = function(monitor) {
   if (this.isPaused) return false;
   if (!this.firstTested) return true;
   var delay = (this.lastTested.getTime() - this.firstTested.getTime()) % this.interval;
+
   return (Date.now() - this.lastTested.getTime() + delay) >= (this.interval || 60000);
 };
 
@@ -426,8 +427,8 @@ Check.statics.callForChecksNeedingPoll = function(callback) {
   });
 };
 
-Check.statics.needingPoll = function() {
-  return this.$where(Check.methods.needsPoll).populate('check.owner');
+Check.statics.needingPoll = function(monitor) {
+   return this.$where(Check.methods.needsPoll).populate('check.owner');
 };
 
 Check.statics.updateAllQos = function(callback) {
