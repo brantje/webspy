@@ -196,17 +196,21 @@ app.put('/checks/:id',isAuthed, function(req, res, next) {
      res.redirect(app.route + '/checks/' + req.params.id);
      }*/
     check.notifiers = req.param('check').notifiers;
-
-    if(check.notifiers.email.value){
-      var adresses = check.notifiers.email.value.split(',');
-      if(adresses.indexOf(req.user.email) === -1){
-        adresses.push(req.user.email);
-      }
-      if(adresses.indexOf('on') >= 0){
-        adresses.splice(adresses.indexOf('on'), 1);
-      }
-      check.notifiers.email.value = adresses.join(',');
+    if(check.notifiers){
+     if(check.notifiers.email){
+       if(check.notifiers.email.value){
+         var adresses = check.notifiers.email.value.split(',');
+         if(adresses.indexOf(req.user.email) === -1){
+           adresses.push(req.user.email);
+         }
+         if(adresses.indexOf('on') >= 0){
+           adresses.splice(adresses.indexOf('on'), 1);
+         }
+         check.notifiers.email.value = adresses.join(',');
+       }
+     }
     }
+    
     check.save(function(err2) {
       if (err2) return next(err2);
       req.flash('info', 'Changes have been saved');
