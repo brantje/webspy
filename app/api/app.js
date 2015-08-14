@@ -21,6 +21,7 @@ app.configure(function(){
   app.use(function (req, res, next) {
     if(app.locals.cluster) {
       res.setHeader('x-cluster-node', 'node'+app.locals.cluster.worker.id+'.'+serverUrl.hostname);
+
     }
     next();
   });

@@ -28,7 +28,7 @@ module.exports = function(app) {
   app.post('/user/login', function(req, res, next) {
     Account.loginUser(req,function(result){
       if(result.errors){
-        res.render('user/login',{ errors: result.errors } );
+        res.json({ errors: result.errors } );
       } else {
         res.cookie('sessionHash', result.session, { maxAge:  24 * 60 * 60 * 1000 });
         if (req.param('remember-me') == 'on'){

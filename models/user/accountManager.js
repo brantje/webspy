@@ -79,8 +79,9 @@ Account.statics.isUserAuthed =  function(req,loggedInCallback,errorCallback){
       }
     });
   } else {
-    if(req.session.sessionHash) {
-      var searchFor = req.session.sessionHash;
+
+    if(req.session.sessionHash || req.headers.authorization) {
+      var searchFor = (req.headers.authorization) ? {sessionHash: req.headers.authorization } : req.session.sessionHash;
       //delete searchFor.user;
       delete searchFor.ip;
       Session.getSessionFromUser(searchFor,function (storedSession) {
@@ -257,7 +258,7 @@ Account.statics.loginUser = function(req,callback){
   var user = req.param('user');
   var pass = req.param('pass');
   var _self = this;
-  _self.db.model('Account').findOne({user:user}, function(e, o) {
+  _self.db.model('Account').findOne({user:user}).populate('owner','-pass').exec( function(e, o) {
     if (o == null){
      callback({ errors: ['User not found'] } );
     }	else{
@@ -266,6 +267,8 @@ Account.statics.loginUser = function(req,callback){
           var userAgent = req.headers['user-agent'];
           var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
           Session.startSession(o, ip,userAgent,function(session){
+            delete o.pass;
+            session[0].user = o;
             delete session[0].userAgent;
             delete session[0].lastAction;
             delete session[0].date;
