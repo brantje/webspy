@@ -91,9 +91,12 @@ Session.statics.setLastAccessed =  function(sessionHash,time,req) {
   });
 };
 
-Session.statics.endSession = function (session){
+Session.statics.endSession = function (session,callback){
   this.db.model('Session').findOne({_id: session._id},function(e,r){
-    if(r) r.remove();
+    if(r){
+      r.remove();
+      callback(r);
+    }
   });
 }
 module.exports = mongoose.model('Session', Session);
