@@ -2,6 +2,7 @@
  * Module dependencies.
  */
 var Account = require('../../../models/user/accountManager');
+var Session = require('../../../models/user/sessionManager');
 
 /**
  * User Routes
@@ -22,7 +23,15 @@ module.exports = function(app) {
   };
 
   app.get('/user/logout', isAuthed, function(req, res, next) {
-
+    var searchFor = (req.headers.authorization) ? {sessionHash: req.headers.authorization } : req.session.sessionHash;
+    //delete searchFor.user;
+    delete searchFor.ip;
+    Session.getSessionFromUser(searchFor,function (storedSession) {
+      Session.endSession(storedSession,function(){
+        var r = {ok: true}
+        res.json(r);
+      });
+    });
   });
 
   app.post('/user/login', function(req, res, next) {
