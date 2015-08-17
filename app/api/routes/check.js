@@ -140,23 +140,22 @@ module.exports = function(app) {
 
  app.put('/checks', function(req, res, next) {
    var check = new Check();
-   try {
-     check.populateFromDirtyCheck(req.body, app.get('pollerCollection'));
-     app.emit('populateFromDirtyCheck', check, req.body, check.type);
-   } catch (checkException) {
-     return next(checkException);
-   }
-   check.save(function(saveError) {
-     if(saveError) return next({status:500, error: saveError});
-     res.json(check);
-   });
- });
 
- app.delete('/checks/:id', loadCheck, function (req, res, next) {
-  req.check.remove(function(err) {
-    if (err) return next(err);
-    res.end();
-  });
+   try {
+     var dirtyCheck = req.body;
+     dirtyCheck.owner = req.user;
+     check.populateFromDirtyCheck(dirtyCheck, app.get('pollerCollection'));
+     app.emit('populateFromDirtyCheck', check, dirtyCheck, check.type);
+   } catch (err) {
+     return next(err);
+   }
+   check.owner = req.user._id;
+   check.notifiers = req.param('notifiers');
+   check.save(function(err) {
+     if (err) return next(err);
+     req.flash('info', 'New check has been created');
+     res.redirect(app.route + (req.body.saveandadd ? '/checks/new' : ('/checks/' + check._id + '?type=hour&date=' + Date.now())));
+   });
  });
 
  app.post('/checks/:id', function(req, res, next) {
