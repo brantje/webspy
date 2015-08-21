@@ -189,14 +189,15 @@ module.exports = function(cluster,workerProcess) {
 
     sessionSockets.on('connection', function (err,socket,session) {
       socket.on('set check', function (check) {
-        //socket.set('check', check);
         if(!session){
           return;
         }
-        socket.emit('ack','listening to '+ check );
         session.curCheck = check;
+        socket.emit('ack','listening to '+ check );
         session.save();
       });
+      //socket.set('check', check);
+
       Ping.on('afterInsert', function (ping) {
         if(!session){
           return;
