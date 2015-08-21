@@ -193,6 +193,7 @@ module.exports = function(cluster,workerProcess) {
         if(!session){
           return;
         }
+        socket.emit('ack','listening to '+ check );
         session.curCheck = check;
         session.save();
       });
