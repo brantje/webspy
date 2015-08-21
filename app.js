@@ -69,7 +69,7 @@ module.exports = function(cluster,workerProcess) {
 
   var sessionStore = new connect.middleware.session.MemoryStore();
   var socketIo = require('socket.io');
-  var io = socketIo.listen(server);
+  var io = socketIo.listen(server, {origins:'webspy.io:* https://webspy.io.com:* http://www.webspy.io:* http://localhost:3000'});
   var SessionSockets = require('session.socket.io')
     , sessionSockets = new SessionSockets(io, sessionStore, cookieParser);
 
