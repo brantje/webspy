@@ -69,7 +69,7 @@ module.exports = function(cluster,workerProcess) {
 
   var sessionStore = new connect.middleware.session.MemoryStore();
   var socketIo = require('socket.io');
-  var io = socketIo.listen(server, {origins:'*'});
+  var io = socketIo.listen(server);
   var SessionSockets = require('session.socket.io')
     , sessionSockets = new SessionSockets(io, sessionStore, cookieParser);
 
