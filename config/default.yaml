@@ -1,5 +1,6 @@
 url: 'https://localhost:8443'
 displayUrl: ''
+cookieDomain: ''
 mongodb:
   server: localhost
   database: uptime
