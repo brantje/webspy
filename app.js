@@ -20,13 +20,13 @@ module.exports = function(cluster,workerProcess) {
   var apiApp = require('./app/api/app');
   var dashboardApp = require('./app/dashboard/app');
   var rootApp = require('./app/root/app');
-  var cookieParser = express.cookieParser('Z5V45V6B5U56B7J5N67J5VTH345GC4G5V4');
   var connect = require('connect');
   var spdy = require('spdy');
   require('events').EventEmitter.prototype._maxListeners = 1000;
 // database
   var serverUrl = url.parse(config.url);
   var analyzer = require('./lib/analyzer');
+  var cookieParser = express.cookieParser('Z5V45V6B5U56B7J5N67J5VTH345GC4G5V4',{ domain: '.webspy.io'  });
 
   if(cluster) {
     console.log('Hello from worker ' + cluster.worker.process.pid);
@@ -113,13 +113,20 @@ module.exports = function(cluster,workerProcess) {
       cookie: {maxAge: 24 * 60 * 60 * 1000}
     }));*/
     app.use(cookieParser);
-    app.use(express.session({ store: sessionStore }));
+    app.use(express.session({ store: sessionStore,
+      cookie: {
+        path: '/',
+        domain: 'webspy.io',
+        maxAge   : 1000*60*60*24*30*12
+      }
+    }));
     app.use(app.router);
     // the following middlewares are only necessary for the mounted 'dashboard' app,
     // but express needs it on the parent app (?) and it therefore pollutes the api
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.set('pollerCollection', new PollerCollection());
+
   });
 // load plugins (may add their own routes and middlewares)
   config.plugins.forEach(function (pluginName) {
@@ -188,6 +195,8 @@ module.exports = function(cluster,workerProcess) {
 
 
     sessionSockets.on('connection', function (err,socket,session) {
+      console.log('client connected');
+      console.log(session);
       socket.on('set check', function (check) {
         if(!session){
           return;
