@@ -40,7 +40,7 @@ module.exports = function(cluster,workerProcess) {
     var a = analyzer.createAnalyzer(config.analyzer);
     a.start();
   }
-  console.log()
+
 
 
 
@@ -269,12 +269,15 @@ module.exports = function(cluster,workerProcess) {
           socket.disconnect();
           return;
         }
-        socket.set('user-' + socket.id, socket.handshake.cookies.sessionHash.user);
+        var user = (socket.handshake.cookies.sessionHash) ? socket.handshake.cookies.sessionHash.user : socket.handshake.cookies.user;
+        socket.set('user-' + socket.id, user);
 
         //console.log(JSON.parse(decodeURI(socket.handshake.headers.cookie)));
         socket.on('set check', function (check) {
           socket.set('check-' + socket.id, check);
+          process.send({event: 'ack', data: check});
         });
+
         process.on('message', function (event) {
           if (!socket.id) {
             return;
@@ -288,7 +291,13 @@ module.exports = function(cluster,workerProcess) {
                 }
               }
             });
-          } else {
+          }
+
+          if (event.event === 'ack') {
+                 socket.emit(event.event, event.data);
+          }
+
+          else {
             socket.get('user-' + socket.id, function (e, r) {
               if (!r) {
                 return;
