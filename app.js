@@ -26,12 +26,8 @@ module.exports = function(cluster,workerProcess) {
 // database
   var serverUrl = url.parse(config.url);
   var analyzer = require('./lib/analyzer');
-  console.log('config.cookieDomain',config.cookieDomain)
-  if(config.cookieDomain){
-    var cookieParser = express.cookieParser('Z5V45V6B5U56B7J5N67J5VTH345GC4G5V4',{ domain: '.webspy.io', path: '/' });
-  } else {
-    var cookieParser = express.cookieParser('Z5V45V6B5U56B7J5N67J5VTH345GC4G5V4');
-  }
+  var cookieParser = express.cookieParser('Z5V45V6B5U56B7J5N67J5VTH345GC4G5V4');
+
 
   if(cluster) {
     console.log('Hello from worker ' + cluster.worker.process.pid);
@@ -92,7 +88,6 @@ module.exports = function(cluster,workerProcess) {
     next();
   });
   app.options('*', function(req, res) {
-    console.log('options')
     res.send(200);
   });
 
@@ -119,17 +114,7 @@ module.exports = function(cluster,workerProcess) {
       cookie: {maxAge: 24 * 60 * 60 * 1000}
     }));*/
     app.use(cookieParser);
-    if(config.cookieDomain){
-      app.use(express.session({ store: sessionStore,
-        cookie: {
-          path: '/',
-          domain: 'webspy.io',
-          maxAge   : 1000*60*60*24*30*12
-        }
-      }));
-    } else {
-      app.use(express.session({ store: sessionStore}));
-    }
+    app.use(express.session({ store: sessionStore}));
     app.use(app.router);
     // the following middlewares are only necessary for the mounted 'dashboard' app,
     // but express needs it on the parent app (?) and it therefore pollutes the api
@@ -262,6 +247,7 @@ module.exports = function(cluster,workerProcess) {
 
 
     //sessionSockets.on('connection', function (err,socket,session) {
+    var connectedUsers = [];
     io.sockets.on('connection', function (socket, session) {
       var list = {}, rc = socket.handshake.headers.cookie;
       cookieParser(socket.handshake, {}, function (parseErr) {
@@ -269,13 +255,29 @@ module.exports = function(cluster,workerProcess) {
           socket.disconnect();
           return;
         }
+
         var user = (socket.handshake.cookies.sessionHash) ? socket.handshake.cookies.sessionHash.user : socket.handshake.cookies.user;
         socket.set('user-' + socket.id, user);
+
+        connectedUsers.push(socket);
+
+        socket.on('disconnect', function() {
+          console.log('Got disconnect!');
+          var idx = connectedUsers.indexOf(socket);
+          socket.set('check-' + socket.id, null);
+          connectedUsers.splice(idx,1);
+
+        });
 
         //console.log(JSON.parse(decodeURI(socket.handshake.headers.cookie)));
         socket.on('set check', function (check) {
           socket.set('check-' + socket.id, check);
-          process.send({event: 'ack', data: check});
+          process.send({event: 'ack', data: 'set check '+ check});
+        });
+
+        socket.on('unset check', function (check) {
+          socket.set('check-' + socket.id, null);
+          process.send({event: 'ack', data: 'unset check '+ check});
         });
 
         process.on('message', function (event) {
