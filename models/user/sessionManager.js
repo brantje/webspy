@@ -57,7 +57,7 @@ Session.statics.getSessionsFromUser =  function(user,callback) {
  */
 Session.statics.getSessionById =  function(id,callback) {
   this.db.model('Session').find({_id: id }, function (e, r) {
-    callback(r[0]);
+    if(callback)  callback(r[0]);
   });
 };
 /**
@@ -95,7 +95,7 @@ Session.statics.endSession = function (session,callback){
   this.db.model('Session').findOne({_id: session._id},function(e,r){
     if(r){
       r.remove();
-      callback(r);
+      if(callback) callback(r);
     }
   });
 }

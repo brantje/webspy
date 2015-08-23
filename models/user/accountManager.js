@@ -125,7 +125,8 @@ Account.statics.createApiKey =  function(name,user,cb) {
     name: name,
     apiKey: crypto.randomBytes(32).toString('hex'),
     created: new Date(),
-    lastAccessed: 0
+    lastAccessed: 0,
+    canDelete: true
   };
   var usr = user.toObject();
   var id = user._id;
@@ -135,7 +136,9 @@ Account.statics.createApiKey =  function(name,user,cb) {
 
   usr.apiKeys.push(apiKey)
   this.db.collection('accounts').update({_id: id},usr,{},function(e,r){
-
+    if(cb){
+      cb(usr,apiKey);
+    }
   });
 };
 
@@ -148,6 +151,9 @@ Account.statics.deleteApiKey =  function(apikeyHash,user,cb) {
     if(usr.apiKeys[i].apiKey == apikeyHash){
       if(i==0){
         return;
+      }
+      if(usr.apiKeys[i].apiKey.canDelete === false){
+        if(cb)cb("Can't delete this apikey",null);
       }
       var ret = usr.apiKeys.splice(i,1);
       break;
@@ -167,7 +173,8 @@ Account.statics.createUser = function(req,callback,session){
     description: 'For quick use',
     apiKey: crypto.randomBytes(32).toString('hex'),
     created: new Date(),
-    lastAccessed: 0
+    lastAccessed: 0,
+    canDelete: false
   }];
   newUser.name = req.param('name');
   newUser.email = req.param('email');

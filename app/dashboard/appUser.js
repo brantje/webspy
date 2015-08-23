@@ -142,7 +142,7 @@ module.exports = function(app) {
         newData.email 	= settings.email;
         notificationSettings.email = notificationSettings.email || { value: ""};
         newData.notificationSettings = notificationSettings;
-        if (settings.newpw==="" && settings.newpwr==="") {
+        if (!settings.newpw==="" && settings.newpwr==="") {
           Account.update({_id: o.id}, newData, {upsert: false}, function (err, r) {
 
           });
