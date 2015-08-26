@@ -27,7 +27,8 @@
     "tcp-ping": "0.1.1",
     "webpagetest": "0.2.0",
     "merge": "~1.2.0",
-    "spore": "~0.1.6"
+    "spore": "~0.1.6",
+    "ssl-root-cas": "^1.1.10"
   },
   "devDependencies": {
     "mocha": "1.7.x",

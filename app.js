@@ -22,6 +22,7 @@ module.exports = function(cluster,workerProcess) {
   var rootApp = require('./app/root/app');
   var connect = require('connect');
   var spdy = require('spdy');
+  require('ssl-root-cas').inject();
   require('events').EventEmitter.prototype._maxListeners = 1000;
 // database
   var serverUrl = url.parse(config.url);
