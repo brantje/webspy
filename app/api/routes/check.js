@@ -79,7 +79,10 @@ module.exports = function (app) {
   app.get('/checks/:id/pause', isUser, loadCheck, function (req, res, next) {
     req.check.togglePause();
     req.check.save(function (err) {
-      if (err) return next(new Error('failed to toggle pause on check' + req.params.id));
+      if (err){
+        return next(new Error('failed to toggle pause on check' + req.params.id));
+      }
+      res.json(req.check);
       new CheckEvent({
         timestamp: new Date(),
         check: req.check,
@@ -87,7 +90,6 @@ module.exports = function (app) {
         owner: req.check.owner,
         message: req.check.isPaused ? 'paused' : 'restarted'
       }).save();
-      res.redirect(app.route + '/checks/' + req.params.id);
     });
   });
 
