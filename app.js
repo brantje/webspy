@@ -236,8 +236,8 @@ module.exports = function(cluster,workerProcess) {
     });
 
     Ping.on('afterInsert', function (ping) {
-          //socket.emit('ping', ping);
-          process.send({event: 'ping', data: ping});
+      //socket.emit('ping', ping);
+      process.send({event: 'ping', data: ping});
     });
 
     CheckEvent.on('afterInsert', function (event) {
@@ -258,7 +258,7 @@ module.exports = function(cluster,workerProcess) {
         }
 
         var user = (socket.handshake.cookies.sessionHash) ? socket.handshake.cookies.sessionHash.user : socket.handshake.cookies.user;
-        socket.set('user-' + socket.id, user);
+        socket.set('user-' + socket.id, JSON.stringify(user));
 
         connectedUsers.push(socket);
 
@@ -287,27 +287,15 @@ module.exports = function(cluster,workerProcess) {
           }
           if (event.event === 'ping') {
             socket.get('check-' + socket.id, function (e, r) {
-              //console.log('Current socket id:', r)
               if (r) {
                 if (event.data.check === r) {
                   socket.emit(event.event, event.data);
                 }
               }
             });
-          }
-
-          if (event.event === 'ack') {
-                 socket.emit(event.event, event.data);
-          }
-
-          else {
+          } else {
             socket.get('user-' + socket.id, function (e, r) {
-              if (!r) {
-                return;
-              }
-              if (event.data.owner === r) {
-                socket.emit(event.event, event.data);
-              }
+              socket.emit(event.event, event.data);
             })
           }
         });

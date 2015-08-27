@@ -3,6 +3,7 @@
  */
 
 var Check = require('../../../models/check');
+var Ping = require('../../../models/ping');
 var CheckEvent = require('../../../models/checkEvent');
 var CheckHourlyStat = require('../../../models/checkHourlyStat');
 var CheckDailyStat = require('../../../models/checkDailyStat');
@@ -182,6 +183,29 @@ module.exports = function (app) {
       check.remove(function(err2) {
         if (err2) return next(err2);
         res.json({ok: true});
+      });
+    });
+  });
+
+  app.post('/checks/:id/reset',isUser, function(req, res, next) {
+    Check.findOne({_id: req.params.id}, function (err, check) {
+      if (err) return next({status: 500, error: err});
+      if (!check) return next({status: 404, errors: 'failed to load check ' + req.params.id})
+      check.removePings(function(){
+        check.removeEvents(function(){
+          check.removeStats(function(){
+            check.downtime = 0;
+            check.uptime = 0;
+            check.qos = {};
+            check.errorCount = 0;
+            check.firstTested = new Date();
+            check.lastChanged = new Date();
+            check.save(function (saveError) {
+              if (saveError) return next({status: 500, error: saveError});
+              res.json(check);
+            });
+          });
+        });
       });
     });
   });
