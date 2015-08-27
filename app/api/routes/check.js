@@ -191,22 +191,25 @@ module.exports = function (app) {
     Check.findOne({_id: req.params.id}, function (err, check) {
       if (err) return next({status: 500, error: err});
       if (!check) return next({status: 404, errors: 'failed to load check ' + req.params.id})
-      check.removePings(function(){
-        check.removeEvents(function(){
-          check.removeStats(function(){
-            check.downtime = 0;
-            check.uptime = 0;
-            check.qos = {};
-            check.errorCount = 0;
-            check.firstTested = new Date();
-            check.lastChanged = new Date();
-            check.save(function (saveError) {
-              if (saveError) return next({status: 500, error: saveError});
-              res.json(check);
-            });
-          });
+      check.remove(function(err2){
+        if (err2) return next(err2);
+        var nwcheck = new Check();
+        nwcheck.type = check.type;
+        check.interval = check.interval / 1000;
+        check.timeout = check.timeout / 1000;
+        nwcheck.lastTested = check.lastTested;
+        try {
+          nwcheck.populateFromDirtyCheck(check, app.get('pollerCollection'));
+          app.emit('populateFromDirtyCheck', nwcheck, check, nwcheck.type);
+        } catch (err) {
+          return next(err);
+        }
+        nwcheck.owner = req.user._id;
+        nwcheck.save(function(saveError){
+          if (saveError) return next({status: 500, error: saveError});
+          res.json(check);
         });
-      });
+      })
     });
   });
 
