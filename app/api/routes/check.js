@@ -151,7 +151,7 @@ module.exports = function (app) {
       return next(err);
     }
     check.owner = req.user._id;
-    check.notifiers = req.param('notifiers');
+    check.notifiers = req.param('notifiers') || req.body.notifiers;
     check.save(function (err) {
       if (err) return next(err);
       res.json(check)
