@@ -28,7 +28,9 @@
     "webpagetest": "0.2.0",
     "merge": "~1.2.0",
     "spore": "~0.1.6",
-    "ssl-root-cas": "^1.1.10"
+    "ssl-root-cas": "^1.1.10",
+    "hipchatter":    "0.2.0",
+    "pushover-notifications":    "0.1.5"
   },
   "devDependencies": {
     "mocha": "1.7.x",

@@ -22,8 +22,8 @@ module.exports = function (app) {
       req.session.user = user;
       next();
     }, function () {
-      res.status(403)     // HTTP status 404: NotFound
-          .send('Forbidden');
+      res.status(401)     // HTTP status 404: NotFound
+          .send('Unauthorized');
       console.log('Something is using an authed route', req.route.path);
     });
   };
@@ -169,6 +169,7 @@ module.exports = function (app) {
       } catch (checkException) {
         return next(checkException);
       }
+      check.notifiers = req.param('notifiers') || req.body.notifiers;
       check.save(function (saveError) {
         if (saveError) return next({status: 500, error: saveError});
         res.json(check);
@@ -205,6 +206,7 @@ module.exports = function (app) {
           return next(err);
         }
         nwcheck.owner = req.user._id;
+        nwcheck.notifiers = check.notifiers;
         nwcheck.save(function(saveError){
           if (saveError) return next({status: 500, error: saveError});
           res.json(check);

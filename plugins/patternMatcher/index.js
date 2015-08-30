@@ -29,6 +29,7 @@ var template = fs.readFileSync(__dirname + '/views/_detailsEdit.ejs', 'utf8');
 exports.initWebApp = function(options) {
 
   var dashboard = options.dashboard;
+  var api = options.api;
 
 	dashboard.on('populateFromDirtyCheck', function(checkDocument, dirtyCheck, type) {
 		if (type !== 'http' && type !== 'https') return;
@@ -49,6 +50,29 @@ exports.initWebApp = function(options) {
 	});
 
   dashboard.on('checkEdit', function(type, check, partial) {
+    if (type !== 'http' && type !== 'https') return;
+    partial.push(ejs.render(template, { locals: { check: check } }));
+  });
+
+  api.on('populateFromDirtyCheck', function(checkDocument, dirtyCheck, type) {
+		if (type !== 'http' && type !== 'https') return;
+    var match = dirtyCheck.match;
+    if (match) {
+      if (match.indexOf('/') !== 0) {
+        match = '/' + match + '/';
+      }
+      var matchParts = match.match(new RegExp(matchPattern));
+      try {
+        // check that the regexp doesn't crash
+        new RegExp(matchParts[1], matchParts[2]);
+      } catch (e) {
+        throw new Error('Malformed regular expression ' + dirtyCheck.match);
+      }
+    }
+    checkDocument.setPollerParam('match', match);
+	});
+
+  api.on('checkEdit', function(type, check, partial) {
     if (type !== 'http' && type !== 'https') return;
     partial.push(ejs.render(template, { locals: { check: check } }));
   });

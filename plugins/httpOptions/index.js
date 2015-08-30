@@ -37,6 +37,7 @@ var template = fs.readFileSync(__dirname + '/views/_detailsEdit.ejs', 'utf8');
 exports.initWebApp = function(options) {
 
   var dashboard = options.dashboard;
+  var api = options.api;
 
 	dashboard.on('populateFromDirtyCheck', function(checkDocument, dirtyCheck, type) {
 		if (type !== 'http' && type !== 'https') return;
@@ -53,6 +54,37 @@ exports.initWebApp = function(options) {
 	});
 
   dashboard.on('checkEdit', function(type, check, partial) {
+    if (type !== 'http' && type !== 'https') return;
+    check.http_options = '';
+    var options = check.getPollerParam('http_options');
+    if (options) {
+      try {
+        options = yaml.safeDump(options);
+      } catch (e) {
+        if (e instanceof YAMLException) {
+          throw new Error('Malformed HTTP options');
+        } else throw e;
+      }
+      check.setPollerParam('http_options', options);
+    }
+    partial.push(ejs.render(template, { locals: { check: check } }));
+  });
+
+  api.on('populateFromDirtyCheck', function(checkDocument, dirtyCheck, type) {
+    if (type !== 'http' && type !== 'https') return;
+    if (!dirtyCheck.http_options) return;
+    var http_options = dirtyCheck.http_options;
+    try {
+      var options = yaml.safeLoad(dirtyCheck.http_options);
+      checkDocument.setPollerParam('http_options', options);
+    } catch (e) {
+      if (e instanceof YAMLException) {
+        throw new Error('Malformed YAML configuration ' + dirtyCheck.http_options);
+      } else throw e;
+    }
+  });
+
+  api.on('checkEdit', function(type, check, partial) {
     if (type !== 'http' && type !== 'https') return;
     check.http_options = '';
     var options = check.getPollerParam('http_options');

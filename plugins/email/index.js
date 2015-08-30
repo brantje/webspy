@@ -79,6 +79,9 @@ exports.initWebApp = function (options) {
       if (!check.notifiers.email) {
         return;
       }
+      if (!check.notifiers.email.value) {
+        return;
+      }
       if (err) return console.error(err);
       var filename = templateDir + checkEvent.message + '.ejs';
       var renderOptions = {

@@ -35,8 +35,10 @@ statushub:
   apiKey: ''
 
 pushbullet:
-  apikey: ""
 
+
+pushover:
+  app_apikey: ''
 
 plugins:
   - ./plugins/console

@@ -16,7 +16,7 @@ module.exports = function(app) {
 
       next();
     },function(){
-      res.status(403)     // HTTP status 404: NotFound
+      res.status(401)     // HTTP status 404: NotFound
       .send('Forbidden');
       console.log('Something is using an authed route',req.route.path);
     });
@@ -80,7 +80,6 @@ module.exports = function(app) {
   });
 
   app.post('/user/apikey', isAuthed, function (req, res) {
-    console.log(req)
     var name = req.param('name');
     Account.createApiKey(name, req.user, function(user,newKey){
       res.json({
@@ -119,8 +118,6 @@ module.exports = function(app) {
       if(settings.newpw && !settings.oldpw){
         errors.push('Please enter your old password');
       }
-      console.log(settings)
-      console.log(errors)
       if (errors.length === 0) {
         newData.name 		= settings.name;
         newData.email 	= settings.email;

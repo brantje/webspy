@@ -53,8 +53,8 @@ var isUser = function(req,res,next) {
     app.locals.user = user;
     next();
   }, function () {
-    res.status(403)     // HTTP status 404: NotFound
-      .send('Forbidden');
+    res.status(401)     // HTTP status 404: NotFound
+      .send('Unauthorized');
   });
 };
 

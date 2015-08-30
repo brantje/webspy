@@ -21,8 +21,8 @@ module.exports = function(app) {
       req.session.user = user;
       next();
     }, function () {
-      res.status(403)     // HTTP status 404: NotFound
-        .send('Forbidden');
+      res.status(401)     // HTTP status 404: NotFound
+        .send('Unauthorized');
       console.log('Something is using an authed route',req.route.path);
     });
   };

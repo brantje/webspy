@@ -60,6 +60,7 @@ if (cluster.isMaster) {
     if(i === 0){
       monitorInstance[i] = require('./monitor')(cluster);
     } else {
+      if(i !== 1) return;
       setTimeout(function(){
         monitorInstance[i] = require('./monitor')(cluster);
       },(i*(1000+i)));

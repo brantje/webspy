@@ -1,4 +1,4 @@
   <div class="form-group">
     <label class="control-label">Pattern to match</label>
-    <input type="text" name="check[match]" value="<%= check.getPollerParam('match') || '' %>" class="form-control" placeholder="Uses regular expressions. Leave blank to disable pattern detection."/>
+    <input type="text" ng-model="check.match" name="check[match]" class="form-control" placeholder="Uses regular expressions. Leave blank to disable pattern detection."/>
   </div>

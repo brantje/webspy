@@ -1,11 +1,11 @@
 /**
- * Pushover plugin for the uptime project - https://github.com/fzaninotto/uptime
+ *  Pushbullet plugin for the uptime project - https://github.com/fzaninotto/uptime
  * Thanks to DMathieu for the Campfire plugin which I basically hacked up to make this
  * work:  https://gist.github.com/dmathieu/5592418
  *
- * This index.js files goes to a directory `plugins/pushover` in your installation of uptime.
+ * This index.js files goes to a directory `plugins/Pushbullet` in your installation of uptime.
  *
- * Notifies all events (up, down, paused, restarted) to pushover
+ * Notifies all events (up, down, paused, restarted) to pushbullet
  *
  * This plugin has a dependency on `pushover-notifications`.
  * Add this to the "dependencies" object in your `package.json` file :
@@ -15,21 +15,11 @@
  *
  * To enable the plugin, add the following line to the plugins section of your config file
  * plugins:
- *  - ./plugins/pushover
+ *  - ./plugins/pushbullet
  *
  * Example configuration
- *
- *   pushover:
- *     token: 8973lkhjfdso8y3 # Authentication token from pushover for app
- *     user: 09r4ljfdso98r # This is the user token you want to send to
- *
- *     event:
- *       up:        true
- *       down:      true
- *       paused:    false
- *       restarted: false
  */
-var config = require('config').pushbullet;
+var config = require('config');
 var CheckEvent = require('../../models/checkEvent');
 var Account = require('../../models/user/accountManager');
 var PushBullet = require('pushbullet');
@@ -38,9 +28,6 @@ var moment = require('moment');
 exports.initWebApp = function () {
 
   CheckEvent.on('afterInsert', function (checkEvent) {
-    /* if (!config.event[checkEvent.message])
-     return;*/
-
     checkEvent.findCheck(function (err, check) {
       if (err) {
         return console.error(err);
@@ -51,27 +38,21 @@ exports.initWebApp = function () {
       if (!check.notifiers.pushbullet) {
         return
       }
-      if(!check.notifiers.pushbullet.apikey){
+      if(!check.owner.notificationSettings.pushbullet.apiKey){
         return;
       }
-      var pusher = new PushBullet(check.notifiers.pushbullet.apikey);
+      var pusher = new PushBullet(check.owner.notificationSettings.pushbullet.apiKey);
       var message;
-      var baseUrl = (options.config.displayUrl !='') ? options.config.displayUrl : options.config.url;
+      var baseUrl = (config.displayUrl !='') ? config.displayUrl : config.url;
       if (checkEvent.message === 'up') {
         message = check.name + ' went back up after ' + moment.duration(checkEvent.downtime).humanize() + ' of downtime';
       } else {
         message = "The application " + check.name + " just went to status " + checkEvent.message
       }
-      var msg = {
-        title: message,
-        //title: "WebSpy Status",
-        sound: 'magic', // optional
-        priority: 1, // optional
-        url: baseUrl+'/dashboard/checks/'+ check._id +'?type=hour&date='+ checkEvent.timestamp.valueOf()
-      };
       var deviceParams = {};
-      pusher.link(deviceParams, msg.title, msg.message, function (error, response) {
-        // response is the JSON response from the API
+      pusher.link(deviceParams, message, baseUrl+'/dashboard/checks/'+ check._id +'?type=hour&date='+ checkEvent.timestamp.valueOf(), function (error, response) {
+        if(error) console.log('Pusbbullet error: ', error);
+        if(response) console.log('Pusbbullet notification successful send. ');
       });
       /*var push     = new pushover({
        token: config.token

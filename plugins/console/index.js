@@ -50,7 +50,7 @@ var registerNewEventsLogger = function() {
          messageColor = 'bold';
       }
 
-      console.log(timestamp() + color(message, messageColor));
+      console.log(timestamp() + color(message, messageColor) + ' ['+ check._id +']');
     });
   });
 };
@@ -60,7 +60,7 @@ var registerNewPingsLogger = function() {
     ping.findCheck(function(err, check) {
       var message = check.name + ' ';
       message += (ping.isUp) ? color('OK', 'green') : color('responded with error "' + ping.error + '"', 'red');
-      console.log(timestamp() + message);
+      console.log(timestamp() + message + ' ['+ check._id +']');
     });
   });
 };

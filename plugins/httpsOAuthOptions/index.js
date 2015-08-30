@@ -37,6 +37,7 @@ var template = fs.readFileSync(__dirname + '/views/_detailsEdit.ejs', 'utf8');
 exports.initWebApp = function(options) {
 
   var dashboard = options.dashboard;
+  var api = options.api;
 
 	dashboard.on('populateFromDirtyCheck', function(checkDocument, dirtyCheck, type) {
 		if (type !== 'https+oauth') return;
@@ -53,6 +54,37 @@ exports.initWebApp = function(options) {
 	});
 
   dashboard.on('checkEdit', function(type, check, partial) {
+    if (type !== 'https+oauth') return;
+    check.httpsOAuth_options = '';
+    var options = check.getPollerParam('httpsOAuth_options');
+    if (options) {
+      try {
+        options = yaml.safeDump(options);
+      } catch (e) {
+        if (e instanceof YAMLException) {
+          throw new Error('Malformed HTTP options');
+        } else throw e;
+      }
+      check.setPollerParam('httpsOAuth_options', options);
+    }
+    partial.push(ejs.render(template, { locals: { check: check } }));
+  });
+
+  api.on('populateFromDirtyCheck', function(checkDocument, dirtyCheck, type) {
+		if (type !== 'https+oauth') return;
+    if (!dirtyCheck.httpsOAuth_options) return;
+    var httpsOAuth_options = dirtyCheck.httpsOAuth_options;
+    try {
+      var options = yaml.safeLoad(dirtyCheck.httpsOAuth_options);
+      checkDocument.setPollerParam('httpsOAuth_options', options);
+    } catch (e) {
+      if (e instanceof YAMLException) {
+        throw new Error('Malformed YAML configuration ' + dirtyCheck.httpsOAuth_options);
+      } else throw e;
+    }
+	});
+
+  api.on('checkEdit', function(type, check, partial) {
     if (type !== 'https+oauth') return;
     check.httpsOAuth_options = '';
     var options = check.getPollerParam('httpsOAuth_options');

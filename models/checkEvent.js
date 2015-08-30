@@ -15,7 +15,7 @@ CheckEvent.index({ check: 1, timestamp: -1 });
 CheckEvent.plugin(require('mongoose-lifecycle'));
 
 CheckEvent.methods.findCheck = function(callback) {
-  return this.db.model('Check').findById(this.check, callback);
+  return this.db.model('Check').findById(this.check, callback).populate('owner','-pass');
 };
 
 CheckEvent.statics.aggregateEventsByDay = function(events, callback) {
